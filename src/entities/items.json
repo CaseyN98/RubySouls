@@ -1,0 +1,258 @@
+{
+  "black_sword": {
+    "name": "Black Blade",
+    "kind": "weapon",
+    "atk": 20,
+    "sprite": "assets/items/black_sword.png",
+    "icon": "assets/items/black_sword.png"
+  },
+    "key_blade": {
+    "name": "Key Blade",
+    "kind": "weapon",
+    "atk": 40,
+    "sprite": "assets/items/key_blade.png",
+    "icon": "assets/items/key_blade.png"
+  },
+
+  "fire_sword": {
+    "name": "Fire Sword",
+    "kind": "weapon",
+    "atk": 25,
+    "sprite": "assets/items/fire_sword.png",
+    "icon": "assets/items/fire_sword.png"
+  },
+
+  "fire_sword_1": {
+    "name": "Fire Sword +1",
+    "kind": "weapon",
+    "atk": 35,
+    "sprite": "assets/items/fire_sword.png",
+    "icon": "assets/items/fire_sword.png"
+  },
+
+  "iron_axe": {
+    "name": "Iron Axe",
+    "kind": "weapon",
+    "atk": 17,
+    "sprite": "assets/items/iron_axe.png",
+    "icon": "assets/items/iron_axe.png"
+  },
+
+  "iron_axe_1": {
+    "name": "Iron Axe +1",
+    "kind": "weapon",
+    "atk": 20,
+    "sprite": "assets/items/iron_axe.png",
+    "icon": "assets/items/iron_axe.png"
+  },
+
+  "iron_sword": {
+    "name": "Iron Sword",
+    "kind": "weapon",
+    "atk": 12,
+    "sprite": "assets/items/iron_sword.png",
+    "icon": "assets/items/iron_sword.png"
+  },
+
+  "iron_sword_1": {
+    "name": "Iron Sword +1",
+    "kind": "weapon",
+    "atk": 20,
+    "sprite": "assets/items/iron_sword.png",
+    "icon": "assets/items/iron_sword.png"
+  },
+
+  "wooden_bow": {
+    "name": "Wooden Bow",
+    "kind": "bow",
+    "atk": 8,
+    "durability": 30,
+    "sprite": "assets/items/wooden_bow.png",
+    "icon": "assets/items/wooden_bow.png"
+  },
+
+  "wooden_bow_1": {
+    "name": "Wooden Bow +1",
+    "kind": "bow",
+    "atk": 16,
+    "durability": 50,
+    "sprite": "assets/items/wooden_bow.png",
+    "icon": "assets/items/wooden_bow.png"
+  },
+
+  "flame_bow": {
+    "name": "Flame Bow",
+    "kind": "bow",
+    "atk": 19,
+    "durability": 40,
+    "sprite": "assets/items/flame_bow.png",
+    "icon": "assets/items/flame_bow.png"
+  },
+
+  "flame_bow_1": {
+    "name": "Flame Bow +1",
+    "kind": "bow",
+    "atk": 29,
+    "durability": 60,
+    "sprite": "assets/items/flame_bow.png",
+    "icon": "assets/items/flame_bow.png"
+  },
+
+  "fire_orb": {
+    "name": "Fire Orb",
+    "kind": "material",
+    "sprite": "assets/items/fire_orb.png",
+    "icon": "assets/items/fire_orb.png"
+  },
+    "water_orb": {
+    "name": "Water Orb",
+    "kind": "material",
+    "sprite": "assets/items/water_orb.png",
+    "icon": "assets/items/water_orb.png"
+  },
+
+  "upgrade_stone": {
+    "name": "Upgrade Stone",
+    "kind": "material",
+    "sprite": "assets/items/upgrade_stone.png",
+    "icon": "assets/items/upgrade_stone.png"
+  },
+
+  "master_key_1_3": {
+    "name": "Master Key",
+    "kind": "material",
+    "sprite": "assets/objects/master_key.png",
+    "icon": "assets/objects/master_key.png"
+  },
+    "master_key_7_9": {
+    "name": "Master Key",
+    "kind": "material",
+    "sprite": "assets/objects/master_key.png",
+    "icon": "assets/objects/master_key.png"
+  },
+
+  "level_warp": {
+    "name": "Warp Crystal",
+    "kind": "level_warp",
+    "sprite": "assets/items/warp_crystal.png",
+    "icon": "assets/items/warp_crystal.png"
+  },
+
+  "health_potion": {
+    "name": "Health Potion",
+    "kind": "consumable",
+    "heal": 30,
+    "sprite": "assets/items/health_potion.png",
+    "icon": "assets/items/health_potion.png"
+  },
+    "health_potion_1": {
+    "name": "Health Potion +1",
+    "kind": "consumable",
+    "heal": 50,
+    "sprite": "assets/items/health_potion.png",
+    "icon": "assets/items/health_potion.png"
+  },
+
+  "stamina_potion": {
+    "name": "Stamina Potion",
+    "kind": "consumable",
+    "sprite": "assets/items/stamina_potion.png",
+    "icon": "assets/items/stamina_potion.png",
+    "props": {
+      "stamina_buff": true,
+      "multiplier": 5.0,
+      "duration": 600
+    }
+  },
+    "stamina_potion_1": {
+    "name": "Stamina Potion +1",
+    "kind": "consumable",
+    "sprite": "assets/items/stamina_potion.png",
+    "icon": "assets/items/stamina_potion.png",
+    "props": {
+      "stamina_buff": true,
+      "multiplier": 5.0,
+      "duration": 1000
+    }
+  },
+
+  "key_0": {
+    "name": "Key 0",
+    "kind": "key",
+    "key_id": "0",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+
+  "key_1": {
+    "name": "Key 1",
+    "kind": "key",
+    "key_id": "1",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+
+  "key_2": {
+    "name": "Key 2",
+    "kind": "key",
+    "key_id": "2",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+
+  "key_3": {
+    "name": "Key 3",
+    "kind": "key",
+    "key_id": "3",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+
+  "key_4": {
+    "name": "Key 4",
+    "kind": "key",
+    "key_id": "4",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+
+  "key_5": {
+    "name": "Key 5",
+    "kind": "key",
+    "key_id": "5",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+
+  "key_6": {
+    "name": "Key 6",
+    "kind": "key",
+    "key_id": "6",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+
+  "key_7": {
+    "name": "Key 7",
+    "kind": "key",
+    "key_id": "7",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+
+  "key_8": {
+    "name": "Key 8",
+    "kind": "key",
+    "key_id": "8",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+
+  "key_9": {
+    "name": "Key 9",
+    "kind": "key",
+    "key_id": "9",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  }
+}

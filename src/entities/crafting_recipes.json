@@ -1,0 +1,75 @@
+{
+  "black_sword": {
+    "inputs": ["iron_sword", "iron_axe"],
+    "output": "black_sword"
+  },
+
+  "fire_sword": {
+    "inputs": ["iron_sword", "fire_orb"],
+    "output": "fire_sword"
+  },
+
+  "fire_sword_1": {
+    "inputs": ["fire_sword", "upgrade_stone"],
+    "output": "fire_sword_1"
+  },
+
+  "flame_bow": {
+    "inputs": ["wooden_bow", "fire_orb"],
+    "output": "flame_bow"
+  },
+
+  "flame_bow_1": {
+    "inputs": ["flame_bow", "upgrade_stone"],
+    "output": "flame_bow_1"
+  },
+
+  "iron_axe_1": {
+    "inputs": ["iron_axe", "upgrade_stone"],
+    "output": "iron_axe_1"
+  },
+
+  "iron_sword_1": {
+    "inputs": ["iron_sword", "upgrade_stone"],
+    "output": "iron_sword_1"
+  },
+
+  "level_warp": {
+    "inputs": ["fire_orb", "water_orb", "master_key_1_3"],
+    "output": "level_warp"
+  },
+    "level_warp_2": {
+    "inputs": ["fire_orb", "water_orb", "master_key_7_9"],
+    "output": "level_warp"
+  },
+  "key_blade": {
+    "inputs": ["key_4", "key_5", "key_6"],
+    "output": "key_blade"
+  },
+    "key_2": {
+    "inputs": ["key_0", "key_1"],
+    "output": "key_2"
+  },
+  "master_key_1_3": {
+    "inputs": ["key_1", "key_2", "key_3"],
+    "output": "master_key_1_3"
+  },
+
+  "master_key_7_9": {
+    "inputs": ["key_7", "key_8", "key_9"],
+    "output": "master_key_7_9"
+  },
+    "health_potion_1": {
+    "inputs": ["health_potion", "health_potion"],
+    "output": "health_potion_1"
+  },
+      "stamina_potion_1": {
+    "inputs": ["stamina_potion", "stamina_potion"],
+    "output": "stamina_potion_1"
+  },
+
+  "wooden_bow_1": {
+    "inputs": ["wooden_bow", "upgrade_stone"],
+    "output": "wooden_bow_1"
+  }
+}
