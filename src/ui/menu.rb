@@ -2,12 +2,13 @@ class Menu
   def initialize(window)
     @window = window
 
-    @options = [
-      "START GAME",
-      "GRAVEYARD (COMING SOON)",
-      "CRAFTING RECIPES",
-      "QUIT"
-    ]
+@options = [
+  "START GAME",
+  "GRAVEYARD",
+  "CRAFTING RECIPES",
+  "QUIT"
+]
+
 
     @selected = 0
     @input_timer = 200
@@ -38,21 +39,18 @@ class Menu
     end
   end
 
-  def handle_select
-    case @selected
-    when 0
-      @window.start_game
-
-    when 1
-      puts "Graveyard not implemented yet!"
-
-    when 2
-      @window.open_crafting_recipes   # ⭐ NEW
-
-    when 3
-      @window.close
-    end
+def handle_select
+  case @selected
+  when 0
+    @window.start_game
+  when 1
+    @window.open_graveyard
+  when 2
+    @window.open_crafting_recipes
+  when 3
+    @window.close
   end
+end
 
   def draw
     w = @window.width

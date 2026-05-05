@@ -17,6 +17,8 @@ class Player
   attr_accessor :x, :y, :direction
   attr_reader :hp, :stamina, :state, :frame
   attr_accessor :attack_hit_applied
+  attr_accessor :kills, :play_time, :last_hit_by
+
 
   HIT_FRAME = 2
 
@@ -56,6 +58,10 @@ class Player
 
     @hp = max_hp
     @stamina = max_stamina
+	@kills       = 0
+	@play_time   = 0.0
+	@last_hit_by = nil
+
 
     @stamina_regen_multiplier = 1.0
     @stamina_buff_timer = 0
@@ -139,8 +145,9 @@ class Player
   # -------------------------------------------------------------
   # Update
   # -------------------------------------------------------------
-  def update(input, collision, game)
-    handle_hotbar_scroll(input)
+def update(input, collision, game)
+  @play_time += 1.0 / 60.0
+  handle_hotbar_scroll(input)
 
     if input.inventory_toggle?
       @inventory_open = !@inventory_open
@@ -229,10 +236,12 @@ class Player
   # -------------------------------------------------------------
   # Combat
   # -------------------------------------------------------------
-  def hit(dmg)
-    return if @invulnerable
-    @hp = [@hp - dmg, 0].max
-  end
+def hit(dmg, source=nil)
+  return if @invulnerable
+  @hp = [@hp - dmg, 0].max
+  @last_hit_by = source.type if source && source.respond_to?(:type)
+end
+
 
   def hit_frame?
     @state == :atk && @frame == HIT_FRAME

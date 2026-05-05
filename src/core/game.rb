@@ -9,6 +9,8 @@ require_relative "../ui/menu"
 require_relative "../entities/projectile"
 require_relative "../ui/ui"
 require_relative "../ui/crafting_recipe_viewer"
+require_relative "../ui/graveyard"
+require_relative "../ui/graveyard_viewer"
 
 require_relative "../entities/item"
 require_relative "../entities/item_db"
@@ -43,10 +45,12 @@ class Game < Gosu::Window
     super WIDTH, HEIGHT
     self.caption = "Ruby Souls"
 
-    @projectiles = []
-    @state = :menu
-    @input = Input
-    @menu = Menu.new(self)
+    @graveyard = Graveyard.new
+
+    @projectiles   = []
+    @state         = :menu
+    @input         = Input
+    @menu          = Menu.new(self)
     @current_level = 0
   end
 
@@ -54,17 +58,25 @@ class Game < Gosu::Window
   # START GAME
   # -------------------------------------------------------------
   def start_game
-    @state = :playing
+    @state         = :playing
     @current_level = 0
     load_level(LEVEL_ORDER[@current_level])
+  end
+
+  # -------------------------------------------------------------
+  # GRAVEYARD VIEW
+  # -------------------------------------------------------------
+  def open_graveyard
+    @graveyard_viewer = GraveyardViewer.new(self, @graveyard)
+    @state = :graveyard
   end
 
   # -------------------------------------------------------------
   # LOAD LEVEL
   # -------------------------------------------------------------
   def load_level(path)
-    @map = Map.new(path)
-    @doors = @map.door_instances
+    @map    = Map.new(path)
+    @doors  = @map.door_instances
     @physics = Physics.new(@map, @doors)
     @combat  = Combat.new
 
@@ -143,6 +155,10 @@ class Game < Gosu::Window
       @menu.update
       return
 
+    when :graveyard
+      @graveyard_viewer.update
+      return
+
     when :crafting_viewer
       @crafting_viewer.update
       return
@@ -154,6 +170,7 @@ class Game < Gosu::Window
       @player.update(@input, @physics, self)
 
       if @player.hp <= 0
+        log_death("Killed by #{ @player.last_hit_by || 'Unknown' }")
         @state = :dead
         return
       end
@@ -181,6 +198,27 @@ class Game < Gosu::Window
   end
 
   # -------------------------------------------------------------
+  # GRAVEYARD LOGGING
+  # -------------------------------------------------------------
+  def log_death(cause)
+    entry = {
+      name:  "Player",
+      floor: @current_level + 1,
+      kills: @player.kills,
+      time:  format_time(@player.play_time),
+      cause: cause
+    }
+
+    @graveyard.add(entry)
+  end
+
+  def format_time(seconds)
+    m = (seconds / 60).to_i
+    s = (seconds % 60).to_i
+    "#{m}m #{s}s"
+  end
+
+  # -------------------------------------------------------------
   # DEATH SCREEN
   # -------------------------------------------------------------
   def draw_death_screen
@@ -202,14 +240,19 @@ class Game < Gosu::Window
       return
     end
 
-if @state == :crafting_viewer
-  # Only close on E or A
-  if id == Gosu::KB_E || id == Gosu::GP_BUTTON_0
-    return_to_menu
-  end
-  return
-end
+    if @state == :crafting_viewer
+      if id == Gosu::KB_E || id == Gosu::GP_BUTTON_0
+        return_to_menu
+      end
+      return
+    end
 
+    if @state == :graveyard
+      if id == Gosu::KB_E || id == Gosu::GP_BUTTON_0
+        return_to_menu
+      end
+      return
+    end
 
     if @state == :dead
       restart_game
@@ -230,6 +273,10 @@ end
     case @state
     when :menu
       @menu.draw
+      return
+
+    when :graveyard
+      @graveyard_viewer.draw
       return
 
     when :crafting_viewer
