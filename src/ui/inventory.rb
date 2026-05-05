@@ -81,10 +81,12 @@ class Inventory
   def selected_index
     @hotbar.selected_index
   end
+def assign_to_hotbar(index, item)
+  return if item && item.kind == "key"   # BLOCK KEYS COMPLETELY
+  @hotbar.slots[index] = item
+end
 
-  def assign_to_hotbar(index, item)
-    @hotbar[index] = item
-  end
+
 
   # -------------------------------------------------------------
   # UI helpers

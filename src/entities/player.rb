@@ -6,19 +6,18 @@ class Player
   STAMINA_MAX  = 100
   ANIM_SPEED   = 10
 
-  ROLL_COST      = 20
-  ROLL_SPEED     = 4.0
-  ROLL_DURATION  = 12
+  ROLL_COST        = 20
+  ROLL_SPEED       = 4.0
+  ROLL_DURATION    = 12
   BOW_STAMINA_COST = 15
 
   ATTACK_STAMINA_COST = 25
-  SCROLL_COOLDOWN = 150
+  SCROLL_COOLDOWN     = 150
 
   attr_accessor :x, :y, :direction
-  attr_reader :hp, :stamina, :state, :frame
+  attr_reader   :hp, :stamina, :state, :frame
   attr_accessor :attack_hit_applied
   attr_accessor :kills, :play_time, :last_hit_by
-
 
   HIT_FRAME = 2
 
@@ -47,33 +46,32 @@ class Player
     @inventory = Inventory.new
 
     @direction = :down
-    @state = :idle
+    @state     = :idle
 
-    @level = 1
-    @xp = 0
-    @xp_to_next = 100
-
-    @base_attack  = 10
+    @level       = 1
+    @xp          = 0
+    @xp_to_next  = 100
+    @base_attack = 10
     @base_defense = 5
 
-    @hp = max_hp
+    @hp      = max_hp
     @stamina = max_stamina
-	@kills       = 0
-	@play_time   = 0.0
-	@last_hit_by = nil
 
+    @kills       = 0
+    @play_time   = 0.0
+    @last_hit_by = nil
 
     @stamina_regen_multiplier = 1.0
-    @stamina_buff_timer = 0
+    @stamina_buff_timer       = 0
 
-    @frame = 0
+    @frame           = 0
     @last_frame_time = Gosu.milliseconds
 
-    @roll_timer = 0
+    @roll_timer   = 0
     @invulnerable = false
 
     @attack_hit_applied = false
-    @last_scroll_time = 0
+    @last_scroll_time   = 0
 
     @animations = {}
     [:idle, :walk, :atk, :roll].each do |state|
@@ -105,13 +103,11 @@ class Player
   end
 
   def level_up
-    @level += 1
-    @hp = max_hp
-    @stamina = max_stamina
-
+    @level   += 1
+    @hp       = max_hp
+    @stamina  = max_stamina
     @base_attack  += 2
     @base_defense += 1
-
     @xp_to_next = (100 * (@level ** 1.5)).to_i
     puts "LEVEL UP! You are now level #{@level}"
   end
@@ -129,7 +125,7 @@ class Player
   end
 
   def defense_power
-    armor = @inventory.respond_to?(:equipped_armor) ? @inventory.equipped_armor : nil
+    armor       = @inventory.respond_to?(:equipped_armor) ? @inventory.equipped_armor : nil
     armor_bonus = armor ? (armor.props[:def] || 0) : 0
     @base_defense + armor_bonus
   end
@@ -145,9 +141,9 @@ class Player
   # -------------------------------------------------------------
   # Update
   # -------------------------------------------------------------
-def update(input, collision, game)
-  @play_time += 1.0 / 60.0
-  handle_hotbar_scroll(input)
+  def update(input, collision, game)
+    @play_time += 1.0 / 60.0
+    handle_hotbar_scroll(input)
 
     if input.inventory_toggle?
       @inventory_open = !@inventory_open
@@ -198,7 +194,7 @@ def update(input, collision, game)
 
       if item.props[:stamina_buff]
         @stamina_regen_multiplier = item.props[:multiplier] || 2.0
-        @stamina_buff_timer = item.props[:duration] || 300
+        @stamina_buff_timer       = item.props[:duration]   || 300
       end
 
       @inventory.remove(item)
@@ -225,10 +221,13 @@ def update(input, collision, game)
 
     @inventory.add(item)
 
-    @inventory.hotbar.slots.each_with_index do |slot, i|
-      if slot.nil?
-        @inventory.assign_to_hotbar(i, item)
-        break
+    # Do NOT auto-assign keys to hotbar
+    unless item.kind == "key"
+      @inventory.hotbar.slots.each_with_index do |slot, i|
+        if slot.nil?
+          @inventory.assign_to_hotbar(i, item)
+          break
+        end
       end
     end
   end
@@ -236,12 +235,11 @@ def update(input, collision, game)
   # -------------------------------------------------------------
   # Combat
   # -------------------------------------------------------------
-def hit(dmg, source=nil)
-  return if @invulnerable
-  @hp = [@hp - dmg, 0].max
-  @last_hit_by = source.type if source && source.respond_to?(:type)
-end
-
+  def hit(dmg, source=nil)
+    return if @invulnerable
+    @hp = [@hp - dmg, 0].max
+    @last_hit_by = source.type if source && source.respond_to?(:type)
+  end
 
   def hit_frame?
     @state == :atk && @frame == HIT_FRAME
@@ -263,7 +261,7 @@ end
       end
 
       if @roll_timer <= 0
-        @state = :idle
+        @state        = :idle
         @invulnerable = false
       end
 
@@ -272,11 +270,11 @@ end
 
     # START ROLL
     if input.roll_pressed? && @stamina >= ROLL_COST
-      @state = :roll
-      @stamina -= ROLL_COST
-      @roll_timer = ROLL_DURATION
+      @state        = :roll
+      @stamina     -= ROLL_COST
+      @roll_timer   = ROLL_DURATION
       @invulnerable = true
-      @vx = @vy = 0
+      @vx = @vy     = 0
       return
     end
 
@@ -292,11 +290,11 @@ end
       end
 
       if @stamina >= ATTACK_STAMINA_COST && @state != :atk
-        @state = :atk
-        @frame = 0
+        @state              = :atk
+        @frame              = 0
         @attack_hit_applied = false
-        @stamina -= ATTACK_STAMINA_COST
-        @vx = @vy = 0
+        @stamina           -= ATTACK_STAMINA_COST
+        @vx = @vy           = 0
         return
       end
     end
@@ -360,15 +358,16 @@ end
       @last_frame_time = Gosu.milliseconds
     end
   end
-def mark_attack_hit
-  @attack_hit_applied = true
-end
+
+  def mark_attack_hit
+    @attack_hit_applied = true
+  end
 
   # -------------------------------------------------------------
   # Regen
   # -------------------------------------------------------------
   def regen_stamina
-    regen = 0.2 * @stamina_regen_multiplier
+    regen    = 0.2 * @stamina_regen_multiplier
     @stamina = [@stamina + regen, max_stamina].min
 
     if @stamina_buff_timer > 0
