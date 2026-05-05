@@ -1,6 +1,8 @@
 require "json"
 
 class CraftingSystem
+attr_reader :recipes
+
   def initialize
     # Resolve path relative to this file, so it works no matter where the game is run from
     path = File.join(__dir__, "../../src/entities/crafting_recipes.json")
