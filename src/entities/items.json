@@ -6,12 +6,26 @@
     "sprite": "assets/items/black_sword.png",
     "icon": "assets/items/black_sword.png"
   },
-    "key_blade": {
-    "name": "Key Blade",
+  "black_sword_1": {
+    "name": "Black Blade +1",
+    "kind": "weapon",
+    "atk": 30,
+    "sprite": "assets/items/black_sword.png",
+    "icon": "assets/items/black_sword.png"
+  },
+  "black_sword_2": {
+    "name": "Black Blade +2",
     "kind": "weapon",
     "atk": 40,
-    "sprite": "assets/items/key_blade.png",
-    "icon": "assets/items/key_blade.png"
+    "sprite": "assets/items/black_sword.png",
+    "icon": "assets/items/black_sword.png"
+  },
+
+  "fire_orb": {
+    "name": "Fire Orb",
+    "kind": "material",
+    "sprite": "assets/items/fire_orb.png",
+    "icon": "assets/items/fire_orb.png"
   },
 
   "fire_sword": {
@@ -21,13 +35,88 @@
     "sprite": "assets/items/fire_sword.png",
     "icon": "assets/items/fire_sword.png"
   },
-
   "fire_sword_1": {
     "name": "Fire Sword +1",
     "kind": "weapon",
     "atk": 35,
     "sprite": "assets/items/fire_sword.png",
     "icon": "assets/items/fire_sword.png"
+  },
+  "fire_sword_2": {
+    "name": "Fire Sword +2",
+    "kind": "weapon",
+    "atk": 45,
+    "sprite": "assets/items/fire_sword.png",
+    "icon": "assets/items/fire_sword.png"
+  },
+  "fire_sword_3": {
+    "name": "Fire Sword +3",
+    "kind": "weapon",
+    "atk": 55,
+    "sprite": "assets/items/fire_sword.png",
+    "icon": "assets/items/fire_sword.png"
+  },
+
+  "flame_bow": {
+    "name": "Flame Bow",
+    "kind": "bow",
+    "atk": 19,
+    "durability": 40,
+    "sprite": "assets/items/flame_bow.png",
+    "icon": "assets/items/flame_bow.png"
+  },
+  "flame_bow_1": {
+    "name": "Flame Bow +1",
+    "kind": "bow",
+    "atk": 29,
+    "durability": 60,
+    "sprite": "assets/items/flame_bow.png",
+    "icon": "assets/items/flame_bow.png"
+  },
+  "flame_bow_2": {
+    "name": "Flame Bow +2",
+    "kind": "bow",
+    "atk": 39,
+    "durability": 80,
+    "sprite": "assets/items/flame_bow.png",
+    "icon": "assets/items/flame_bow.png"
+  },
+  "flame_bow_3": {
+    "name": "Flame Bow +3",
+    "kind": "bow",
+    "atk": 49,
+    "durability": 100,
+    "sprite": "assets/items/flame_bow.png",
+    "icon": "assets/items/flame_bow.png"
+  },
+
+  "health_potion": {
+    "name": "Health Potion",
+    "kind": "consumable",
+    "heal": 30,
+    "sprite": "assets/items/health_potion.png",
+    "icon": "assets/items/health_potion.png"
+  },
+  "health_potion_1": {
+    "name": "Health Potion +1",
+    "kind": "consumable",
+    "heal": 50,
+    "sprite": "assets/items/health_potion.png",
+    "icon": "assets/items/health_potion.png"
+  },
+  "health_potion_2": {
+    "name": "Health Potion +2",
+    "kind": "consumable",
+    "heal": 70,
+    "sprite": "assets/items/health_potion.png",
+    "icon": "assets/items/health_potion.png"
+  },
+  "health_potion_3": {
+    "name": "Health Potion +3",
+    "kind": "consumable",
+    "heal": 90,
+    "sprite": "assets/items/health_potion.png",
+    "icon": "assets/items/health_potion.png"
   },
 
   "iron_axe": {
@@ -37,11 +126,24 @@
     "sprite": "assets/items/iron_axe.png",
     "icon": "assets/items/iron_axe.png"
   },
-
   "iron_axe_1": {
     "name": "Iron Axe +1",
     "kind": "weapon",
     "atk": 20,
+    "sprite": "assets/items/iron_axe.png",
+    "icon": "assets/items/iron_axe.png"
+  },
+  "iron_axe_2": {
+    "name": "Iron Axe +2",
+    "kind": "weapon",
+    "atk": 28,
+    "sprite": "assets/items/iron_axe.png",
+    "icon": "assets/items/iron_axe.png"
+  },
+  "iron_axe_3": {
+    "name": "Iron Axe +3",
+    "kind": "weapon",
+    "atk": 36,
     "sprite": "assets/items/iron_axe.png",
     "icon": "assets/items/iron_axe.png"
   },
@@ -53,7 +155,6 @@
     "sprite": "assets/items/iron_sword.png",
     "icon": "assets/items/iron_sword.png"
   },
-
   "iron_sword_1": {
     "name": "Iron Sword +1",
     "kind": "weapon",
@@ -61,74 +162,98 @@
     "sprite": "assets/items/iron_sword.png",
     "icon": "assets/items/iron_sword.png"
   },
-
-  "wooden_bow": {
-    "name": "Wooden Bow",
-    "kind": "bow",
-    "atk": 8,
-    "durability": 30,
-    "sprite": "assets/items/wooden_bow.png",
-    "icon": "assets/items/wooden_bow.png"
+  "iron_sword_2": {
+    "name": "Iron Sword +2",
+    "kind": "weapon",
+    "atk": 28,
+    "sprite": "assets/items/iron_sword.png",
+    "icon": "assets/items/iron_sword.png"
+  },
+  "iron_sword_3": {
+    "name": "Iron Sword +3",
+    "kind": "weapon",
+    "atk": 36,
+    "sprite": "assets/items/iron_sword.png",
+    "icon": "assets/items/iron_sword.png"
   },
 
-  "wooden_bow_1": {
-    "name": "Wooden Bow +1",
-    "kind": "bow",
-    "atk": 16,
-    "durability": 50,
-    "sprite": "assets/items/wooden_bow.png",
-    "icon": "assets/items/wooden_bow.png"
+  "key_0": {
+    "name": "Key 0",
+    "kind": "key",
+    "key_id": "0",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+  "key_1": {
+    "name": "Key 1",
+    "kind": "key",
+    "key_id": "1",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+  "key_2": {
+    "name": "Key 2",
+    "kind": "key",
+    "key_id": "2",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+  "key_3": {
+    "name": "Key 3",
+    "kind": "key",
+    "key_id": "3",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+  "key_4": {
+    "name": "Key 4",
+    "kind": "key",
+    "key_id": "4",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+  "key_5": {
+    "name": "Key 5",
+    "kind": "key",
+    "key_id": "5",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+  "key_6": {
+    "name": "Key 6",
+    "kind": "key",
+    "key_id": "6",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+  "key_7": {
+    "name": "Key 7",
+    "kind": "key",
+    "key_id": "7",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+  "key_8": {
+    "name": "Key 8",
+    "kind": "key",
+    "key_id": "8",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
+  },
+  "key_9": {
+    "name": "Key 9",
+    "kind": "key",
+    "key_id": "9",
+    "sprite": "assets/objects/key.png",
+    "icon": "assets/objects/key.png"
   },
 
-  "flame_bow": {
-    "name": "Flame Bow",
-    "kind": "bow",
-    "atk": 19,
-    "durability": 40,
-    "sprite": "assets/items/flame_bow.png",
-    "icon": "assets/items/flame_bow.png"
-  },
-
-  "flame_bow_1": {
-    "name": "Flame Bow +1",
-    "kind": "bow",
-    "atk": 29,
-    "durability": 60,
-    "sprite": "assets/items/flame_bow.png",
-    "icon": "assets/items/flame_bow.png"
-  },
-
-  "fire_orb": {
-    "name": "Fire Orb",
-    "kind": "material",
-    "sprite": "assets/items/fire_orb.png",
-    "icon": "assets/items/fire_orb.png"
-  },
-    "water_orb": {
-    "name": "Water Orb",
-    "kind": "material",
-    "sprite": "assets/items/water_orb.png",
-    "icon": "assets/items/water_orb.png"
-  },
-
-  "upgrade_stone": {
-    "name": "Upgrade Stone",
-    "kind": "material",
-    "sprite": "assets/items/upgrade_stone.png",
-    "icon": "assets/items/upgrade_stone.png"
-  },
-
-  "master_key_1_3": {
-    "name": "Master Key",
-    "kind": "material",
-    "sprite": "assets/objects/master_key.png",
-    "icon": "assets/objects/master_key.png"
-  },
-    "master_key_7_9": {
-    "name": "Master Key",
-    "kind": "material",
-    "sprite": "assets/objects/master_key.png",
-    "icon": "assets/objects/master_key.png"
+  "key_blade": {
+    "name": "Key Blade",
+    "kind": "weapon",
+    "atk": 40,
+    "sprite": "assets/items/key_blade.png",
+    "icon": "assets/items/key_blade.png"
   },
 
   "level_warp": {
@@ -138,19 +263,17 @@
     "icon": "assets/items/warp_crystal.png"
   },
 
-  "health_potion": {
-    "name": "Health Potion",
-    "kind": "consumable",
-    "heal": 30,
-    "sprite": "assets/items/health_potion.png",
-    "icon": "assets/items/health_potion.png"
+  "master_key_1_3": {
+    "name": "Master Key",
+    "kind": "material",
+    "sprite": "assets/objects/master_key.png",
+    "icon": "assets/objects/master_key.png"
   },
-    "health_potion_1": {
-    "name": "Health Potion +1",
-    "kind": "consumable",
-    "heal": 50,
-    "sprite": "assets/items/health_potion.png",
-    "icon": "assets/items/health_potion.png"
+  "master_key_7_9": {
+    "name": "Master Key",
+    "kind": "material",
+    "sprite": "assets/objects/master_key.png",
+    "icon": "assets/objects/master_key.png"
   },
 
   "stamina_potion": {
@@ -164,7 +287,7 @@
       "duration": 600
     }
   },
-    "stamina_potion_1": {
+  "stamina_potion_1": {
     "name": "Stamina Potion +1",
     "kind": "consumable",
     "sprite": "assets/items/stamina_potion.png",
@@ -175,84 +298,73 @@
       "duration": 1000
     }
   },
-
-  "key_0": {
-    "name": "Key 0",
-    "kind": "key",
-    "key_id": "0",
-    "sprite": "assets/objects/key.png",
-    "icon": "assets/objects/key.png"
+  "stamina_potion_2": {
+    "name": "Stamina Potion +2",
+    "kind": "consumable",
+    "sprite": "assets/items/stamina_potion.png",
+    "icon": "assets/items/stamina_potion.png",
+    "props": {
+      "stamina_buff": true,
+      "multiplier": 5.0,
+      "duration": 1400
+    }
+  },
+  "stamina_potion_3": {
+    "name": "Stamina Potion +3",
+    "kind": "consumable",
+    "sprite": "assets/items/stamina_potion.png",
+    "icon": "assets/items/stamina_potion.png",
+    "props": {
+      "stamina_buff": true,
+      "multiplier": 5.0,
+      "duration": 1800
+    }
   },
 
-  "key_1": {
-    "name": "Key 1",
-    "kind": "key",
-    "key_id": "1",
-    "sprite": "assets/objects/key.png",
-    "icon": "assets/objects/key.png"
+  "upgrade_stone": {
+    "name": "Upgrade Stone",
+    "kind": "material",
+    "sprite": "assets/items/upgrade_stone.png",
+    "icon": "assets/items/upgrade_stone.png"
   },
 
-  "key_2": {
-    "name": "Key 2",
-    "kind": "key",
-    "key_id": "2",
-    "sprite": "assets/objects/key.png",
-    "icon": "assets/objects/key.png"
+  "water_orb": {
+    "name": "Water Orb",
+    "kind": "material",
+    "sprite": "assets/items/water_orb.png",
+    "icon": "assets/items/water_orb.png"
   },
 
-  "key_3": {
-    "name": "Key 3",
-    "kind": "key",
-    "key_id": "3",
-    "sprite": "assets/objects/key.png",
-    "icon": "assets/objects/key.png"
+  "wooden_bow": {
+    "name": "Wooden Bow",
+    "kind": "bow",
+    "atk": 8,
+    "durability": 30,
+    "sprite": "assets/items/wooden_bow.png",
+    "icon": "assets/items/wooden_bow.png"
   },
-
-  "key_4": {
-    "name": "Key 4",
-    "kind": "key",
-    "key_id": "4",
-    "sprite": "assets/objects/key.png",
-    "icon": "assets/objects/key.png"
+  "wooden_bow_1": {
+    "name": "Wooden Bow +1",
+    "kind": "bow",
+    "atk": 16,
+    "durability": 50,
+    "sprite": "assets/items/wooden_bow.png",
+    "icon": "assets/items/wooden_bow.png"
   },
-
-  "key_5": {
-    "name": "Key 5",
-    "kind": "key",
-    "key_id": "5",
-    "sprite": "assets/objects/key.png",
-    "icon": "assets/objects/key.png"
+  "wooden_bow_2": {
+    "name": "Wooden Bow +2",
+    "kind": "bow",
+    "atk": 24,
+    "durability": 70,
+    "sprite": "assets/items/wooden_bow.png",
+    "icon": "assets/items/wooden_bow.png"
   },
-
-  "key_6": {
-    "name": "Key 6",
-    "kind": "key",
-    "key_id": "6",
-    "sprite": "assets/objects/key.png",
-    "icon": "assets/objects/key.png"
-  },
-
-  "key_7": {
-    "name": "Key 7",
-    "kind": "key",
-    "key_id": "7",
-    "sprite": "assets/objects/key.png",
-    "icon": "assets/objects/key.png"
-  },
-
-  "key_8": {
-    "name": "Key 8",
-    "kind": "key",
-    "key_id": "8",
-    "sprite": "assets/objects/key.png",
-    "icon": "assets/objects/key.png"
-  },
-
-  "key_9": {
-    "name": "Key 9",
-    "kind": "key",
-    "key_id": "9",
-    "sprite": "assets/objects/key.png",
-    "icon": "assets/objects/key.png"
+  "wooden_bow_3": {
+    "name": "Wooden Bow +3",
+    "kind": "bow",
+    "atk": 32,
+    "durability": 90,
+    "sprite": "assets/items/wooden_bow.png",
+    "icon": "assets/items/wooden_bow.png"
   }
 }
