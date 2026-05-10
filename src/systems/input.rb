@@ -98,6 +98,10 @@ end
   def self.mouse_pos(window)
     [window.mouse_x, window.mouse_y]
   end
+def self.drop_pressed?
+  key_pressed?(Gosu::Gp0Button1)
+end
+
 
   # -------------------------------------------------------------
   # Movement (Left Stick)

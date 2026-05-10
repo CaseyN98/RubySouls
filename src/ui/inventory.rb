@@ -57,11 +57,18 @@ class Inventory
     remove(item)
   end
 
-  def unequip_weapon
-    return unless @equipped_weapon
-    @items << @equipped_weapon
-    @equipped_weapon = nil
-  end
+def unequip_weapon
+  return unless @equipped_weapon
+
+  # Return weapon to inventory
+  @items << @equipped_weapon
+
+  # Remove from hotbar if present
+  @hotbar.slots.map! { |slot| slot == @equipped_weapon ? nil : slot }
+
+  @equipped_weapon = nil
+end
+
 
   # -------------------------------------------------------------
   # Hotbar selection (delegation)
