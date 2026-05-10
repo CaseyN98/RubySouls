@@ -1,11 +1,7 @@
 class Enemy
   attr_accessor :x, :y, :aggro_timer
-  attr_reader :hp, :dead, :attack_power, :defense_power, :aggro_range, :name, :radius
+  attr_reader :hp, :dead, :attack_power, :defense_power, :aggro_range, :name, :radius, :is_boss, :props
 
-
-  # -------------------------------------------------------------
-  # Animation definitions per enemy type
-  # -------------------------------------------------------------
   ENEMY_TYPES = {
     "default" => {
       states: [:idle, :walk, :atk],
@@ -13,19 +9,18 @@ class Enemy
       frames: { idle: 6, walk: 6, atk: 6 },
       folder: "enemy"
     },
-	 "skeleton" => {
+    "skeleton" => {
       states: [:idle, :walk, :atk],
       dirs:   [:up, :down, :left, :right],
       frames: { idle: 6, walk: 6, atk: 6 },
       folder: "skeleton"
     },
-	"Bskeleton" => {
+    "Bskeleton" => {
       states: [:idle, :walk, :atk],
       dirs:   [:up, :down, :left, :right],
       frames: { idle: 6, walk: 6, atk: 6 },
       folder: "Bskeleton"
     },
-
     "slime" => {
       states: [:idle, :walk, :atk],
       dirs:   [:up, :down, :left, :right],
@@ -34,34 +29,39 @@ class Enemy
     }
   }
 
-  # -------------------------------------------------------------
-  # Load animation with variable frame count
-  # -------------------------------------------------------------
   def load_animation(path, frame_count)
     img = Gosu::Image.new(path, retro: true)
     frame_w = img.width / frame_count
     frame_h = img.height
-
-    Array.new(frame_count) do |i|
-      img.subimage(i * frame_w, 0, frame_w, frame_h)
-    end
+    Array.new(frame_count) { |i| img.subimage(i * frame_w, 0, frame_w, frame_h) }
   rescue
     nil
   end
 
-  # -------------------------------------------------------------
-  # Initialize (supports Tiled props for atk/def)
-  # -------------------------------------------------------------
   def initialize(x, y, hp = 20, type: "default", props: {})
     props ||= {}
-	@x, @y = x, y
+
+    @x, @y = x, y
     @hp = hp
     @dead = false
-	@radius = 8 
-	@aggro_range = (props["aggro_range"] || 120).to_i
-	@aggro_timer = rand(10..60)   # 0.2s to 1s delay
-    
-    @name = props["name"] || @type.to_s.capitalize
+@props = props
+
+    @type = type || ""
+    @is_boss = props["boss"] || false
+
+    @radius = (props["radius"] || 8).to_i
+    @aggro_range = (props["aggro_range"] || 15).to_i
+    @aggro_timer = rand(10..60)
+
+   if $game&.rogue_mode?
+  # Rogue Mode → only bosses have names
+  @name = props["boss"] ? props["name"] : nil
+else
+  # Normal Mode → use name if provided
+  @name = props["name"]
+end
+
+
 
     @max_hp = @hp
 
@@ -71,59 +71,46 @@ class Enemy
     @frame = 0
     @last_frame_time = Gosu.milliseconds
 
-    @type = type || "default"
     @config = ENEMY_TYPES[@type]
 
-    # -----------------------------
-    # Enemy stats (Tiled override)
-    # -----------------------------
-@attack_power  = (props["attack"]  || props["atk"]  || 5).to_i
-@defense_power = (props["defense"] || props["def"] || 0).to_i
-@xp_value      = (props["xp"]      || props["xp_value"] || 10).to_i
+    @attack_power  = (props["attack"]  || props["atk"]  || 5).to_i
+    @defense_power = (props["defense"] || props["def"] || 0).to_i
+    @xp_value      = (props["xp"]      || props["xp_value"] || 10).to_i
 
     load_animations
   end
 
-  # -------------------------------------------------------------
-  # Build animation table dynamically
-  # -------------------------------------------------------------
   def load_animations
     @animations = {}
-
     @config[:states].each do |state|
       @animations[state] = {}
-
       @config[:dirs].each do |dir|
         frame_count = @config[:frames][state]
         folder = @config[:folder]
-
         path = "assets/sprites/#{folder}/#{folder}_#{state}_#{dir}.png"
         @animations[state][dir] = load_animation(path, frame_count)
       end
     end
   end
 
-  # -------------------------------------------------------------
-  # Update logic
-  # -------------------------------------------------------------
   def update(player, physics, ui)
     return if @dead
 
     dist = Math.hypot(player.x - @x, player.y - @y)
 
     if @state == :atk
-      # Attack animation plays out
+      # wait for animation
     elsif dist < 120 && dist > 18
       @state = :walk
       angle = Math.atan2(player.y - @y, player.x - @x)
       vx = Math.cos(angle) * @speed
       vy = Math.sin(angle) * @speed
 
-      if vx.abs > vy.abs
-        @direction = vx > 0 ? :right : :left
-      else
-        @direction = vy > 0 ? :down : :up
-      end
+      @direction = if vx.abs > vy.abs
+                     vx > 0 ? :right : :left
+                   else
+                     vy > 0 ? :down : :up
+                   end
 
       physics.move(self, vx, vy)
 
@@ -138,9 +125,6 @@ class Enemy
     update_animation(player)
   end
 
-  # -------------------------------------------------------------
-  # Animation update (variable frame counts)
-  # -------------------------------------------------------------
   def update_animation(player)
     anim = @animations[@state][@direction]
     return unless anim
@@ -151,71 +135,64 @@ class Enemy
       @frame = (@frame + 1) % frame_count
       @last_frame_time = Gosu.milliseconds
 
-      # Enemy hits player on frame 3
       if @state == :atk && @frame == 3 && frame_count > 3
         dmg = [@attack_power - player.defense_power, 1].max
         player.hit(dmg)
       end
 
-      # End attack after animation loops
-      if @state == :atk && @frame == 0
-        @state = :idle
-      end
+      @state = :idle if @state == :atk && @frame == 0
     end
   end
 
-  # -------------------------------------------------------------
-  # Taking damage (player attack)
-  # -------------------------------------------------------------
-def hit(dmg, player = nil, ui = nil)
+def hit(dmg, player=nil, ui=nil)
   @hp -= dmg
 
   if @hp <= 0 && !@dead
     @dead = true
 
+    # XP base value
+    xp = @xp_value || 5
+
+    # Rogue Mode XP scaling
+    xp *= 2 if $game&.rogue_mode?
+
+    # Award XP
     if player && player.respond_to?(:gain_xp)
-      player.gain_xp(@xp_value)
+      player.gain_xp(xp)
+      ui.add_damage_world(@x, @y - 20, "+#{xp} XP", Gosu::Color::GREEN) if ui
     end
   end
 end
+
 
 
   def dead?
     @dead
   end
 
-  # -------------------------------------------------------------
-  # Draw
-  # -------------------------------------------------------------
-def draw(cam_x, cam_y)
-  return if @dead
+  def draw(cam_x, cam_y)
+    return if @dead
 
-  anim = @animations[@state][@direction]
-  return unless anim
+    anim = @animations[@state][@direction]
+    return unless anim
 
-  screen_x = (@x - cam_x).to_i - 8
-  screen_y = (@y - cam_y).to_i - 8
+    screen_x = (@x - cam_x).to_i - 8
+    screen_y = (@y - cam_y).to_i - 8
 
-  # Draw sprite
-  anim[@frame].draw(screen_x, screen_y, 10)
+    anim[@frame].draw(screen_x, screen_y, 10)
 
-  # -------------------------------------------------------------
-  # Floating Health Bar + Name
-  # -------------------------------------------------------------
-  bar_width  = 20
-  bar_height = 3
-  hp_ratio   = @hp.to_f / @max_hp
+    bar_width  = 20
+    bar_height = 3
+    hp_ratio   = @hp.to_f / @max_hp
 
-  # Background bar (dark)
-  Gosu.draw_rect(screen_x, screen_y - 10, bar_width, bar_height, Gosu::Color::GRAY, 21)
+    Gosu.draw_rect(screen_x, screen_y - 10, bar_width, bar_height, Gosu::Color::GRAY, 21)
+    Gosu.draw_rect(screen_x, screen_y - 10, bar_width * hp_ratio, bar_height, Gosu::Color::RED, 22)
 
-  # HP bar (red)
-  Gosu.draw_rect(screen_x, screen_y - 10, bar_width * hp_ratio, bar_height, Gosu::Color::RED, 22)
-
-  # Name text
-  @name_font ||= Gosu::Font.new(8, name: "Courier")
+    @name_font ||= Gosu::Font.new(8, name: "Courier")
+if @name
   text_w = @name_font.text_width(@name)
-  @name_font.draw_text(@name, screen_x + (bar_width - text_w) / 2, screen_y - 22, 22, 1, 1, Gosu::Color::WHITE)
+  @name_font.draw_text(@name, screen_x + (bar_width - text_w) / 2, screen_y - 22, 22)
 end
 
+  end
 end

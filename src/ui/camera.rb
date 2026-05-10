@@ -53,7 +53,7 @@ class Camera
     end
 
     # ---------------------------------------------------------
-    # BORDER CLAMPING — applied AFTER smoothing
+    # BORDER CLAMPING — works for both Map and RogueMap
     # ---------------------------------------------------------
     map_w = @map.width  * @map.tile_w
     map_h = @map.height * @map.tile_h
@@ -61,15 +61,15 @@ class Camera
     max_x = map_w - @vw
     max_y = map_h - @vh
 
-    # If map is smaller than screen, center it
-    if max_x < 0
-      @x = max_x / 2.0
+    # If map is smaller than screen, clamp to 0 instead of negative
+    if max_x <= 0
+      @x = 0
     else
       @x = @x.clamp(0, max_x)
     end
 
-    if max_y < 0
-      @y = max_y / 2.0
+    if max_y <= 0
+      @y = 0
     else
       @y = @y.clamp(0, max_y)
     end

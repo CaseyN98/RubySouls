@@ -199,4 +199,11 @@ end
     key_pressed?(Gosu::KB_C) ||
     key_pressed?(Gosu::Gp0Button7)
   end
+  def self.clear
+  @prev_keys.clear
+  @prev_mouse.clear
+  @prev_axes.clear
+  @last_button = nil
+end
+
 end

@@ -14,10 +14,10 @@ class Combat
 
           ui.add_damage_world(enemy.x, enemy.y, damage, Gosu::Color::YELLOW)
 
-          # Track kills for graveyard
           if enemy.dead?
             player.kills += 1
             enemy.instance_variable_set(:@just_died, true)
+            enemy.props["just_died"] = true
           end
 
           player.mark_attack_hit
@@ -29,7 +29,10 @@ class Combat
       # -------------------------------------------------------------
       if enemy.respond_to?(:attack_frame?) && enemy.attack_frame?
         if enemy.respond_to?(:can_attack_player?) && enemy.can_attack_player?(player)
-          damage = enemy.attack_power
+
+          # Allow bosses to override damage
+          damage = enemy.props["dmg"] || enemy.attack_power
+
           apply_player_damage(player, ui, damage, enemy)
         end
       end
@@ -45,14 +48,17 @@ class Combat
   end
 
   # -------------------------------------------------------------
-  # ATTACK RANGE CHECK
+  # ATTACK RANGE CHECK (supports boss radius)
   # -------------------------------------------------------------
   def in_attack_range?(player, enemy)
     dx = enemy.x - player.x
     dy = enemy.y - player.y
 
     distance = Math.hypot(dx, dy)
-    return false if distance > 20
+
+    # Allow enemies to define their own melee radius
+    range = enemy.props["range"] || 20
+    return false if distance > range
 
     angle = Math.atan2(dy, dx)
 
@@ -70,9 +76,6 @@ class Combat
     diff < Math::PI / 3
   end
 
-  # -------------------------------------------------------------
-  # DRAW (reserved for future VFX)
-  # -------------------------------------------------------------
   def draw(cam_x, cam_y)
     # reserved for melee effects later
   end

@@ -13,13 +13,20 @@ class EnemySystem
       dx = b.x - a.x
       dy = b.y - a.y
       dist = Math.hypot(dx, dy)
-      next if dist == 0 || dist > 16  # enemy radius
+      next if dist == 0
 
-      overlap = 16 - dist
+      # Optional: support variable radii
+ra = a.radius
+rb = b.radius
+
+      min_dist = [ra, rb].min
+
+      next if dist > min_dist
+
+      overlap = min_dist - dist
       nx = dx / dist
       ny = dy / dist
 
-      # Use physics to avoid clipping walls
       physics.move(a, -nx * overlap / 4, -ny * overlap / 4)
       physics.move(b,  nx * overlap / 4,  ny * overlap / 4)
     end
@@ -29,18 +36,16 @@ class EnemySystem
   # Update all enemies + XP awarding
   # -------------------------------------------------------------
   def update(player, physics, ui)
-    # Update AI + movement
     @enemies.each do |enemy|
       next if enemy.dead?
-      enemy.update(player, physics, ui)
+      enemy.update(player, physics, ui) if enemy.respond_to?(:update)
     end
 
-    # Award XP for newly dead enemies
     @enemies.each do |enemy|
       next unless enemy.dead?
 
       if enemy.instance_variable_get(:@just_died)
-        xp = enemy.instance_variable_get(:@xp_value) || 10
+        xp = enemy.props["xp"] || enemy.instance_variable_get(:@xp_value) || 10
 
         player.gain_xp(xp)
         ui.add_damage_screen(300, 240, "+#{xp} XP", Gosu::Color::BLUE)
@@ -49,7 +54,6 @@ class EnemySystem
       end
     end
 
-    # Handle enemy separation after movement
     separate_enemies(physics)
   end
 end

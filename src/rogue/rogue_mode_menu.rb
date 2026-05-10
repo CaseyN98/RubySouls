@@ -1,24 +1,17 @@
-class Menu
+# src/rogue/rogue_mode_menu.rb
+class RogueModeMenu
   def initialize(window)
     @window = window
+    @font   = Gosu::Font.new(36, name: "Courier")
 
     @options = [
-      "START GAME",
+      "NORMAL MODE",
       "ROGUE MODE",
-      "GRAVEYARD",
-      "CRAFTING RECIPES",
-      "QUIT"
+      "BACK"
     ]
 
     @selected = 0
     @input_timer = 200
-
-    @font = Gosu::Font.new(36, name: "Courier")
-
-    @bg   = Gosu::Image.new("assets/ect/menu_bg.png", tileable: true)
-    @logo = Gosu::Image.new("assets/ect/logo.png") rescue nil
-
-    @logo_scale = 0.7
   end
 
   def update
@@ -42,15 +35,11 @@ class Menu
   def handle_select
     case @selected
     when 0
-      @window.start_game
+      @window.start_game          # NORMAL MODE
     when 1
-      @window.start_rogue_mode
+      @window.start_rogue_mode    # ROGUE MODE
     when 2
-      @window.open_graveyard
-    when 3
-      @window.open_crafting_recipes
-    when 4
-      @window.close
+      @window.return_to_menu      # BACK
     end
   end
 
@@ -58,19 +47,7 @@ class Menu
     w = @window.width
     h = @window.height
 
-    @bg.draw(0, 0, 0, w.to_f / @bg.width, h.to_f / @bg.height)
-
-    if @logo
-      scaled_w = @logo.width * @logo_scale
-      scaled_h = @logo.height * @logo_scale
-
-      lx = (w - scaled_w) / 2
-      ly = 40
-
-      @logo.draw(lx, ly, 10, @logo_scale, @logo_scale)
-    end
-
-    base_y = 360
+    base_y = 260
 
     @options.each_with_index do |opt, i|
       text_w = @font.text_width(opt)

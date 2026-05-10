@@ -26,6 +26,9 @@ require_relative "../systems/combat"
 require_relative "../systems/enemy"
 require_relative "../systems/crafting"
 
+require_relative "../rogue/rogue_floor"
+require_relative "../rogue/rogue_map"
+
 $crafting_system = CraftingSystem.new
 
 class Game < Gosu::Window
@@ -45,22 +48,94 @@ class Game < Gosu::Window
     super WIDTH, HEIGHT
     self.caption = "Ruby Souls"
 
+    @open_portal_img   = Gosu::Image.new("assets/objects/open_portal.png", retro: true)
+    @closed_portal_img = Gosu::Image.new("assets/objects/closed_portal.png", retro: true)
+
     @graveyard = Graveyard.new
 
     @projectiles   = []
     @state         = :menu
+    @rogue_mode    = false
+
     @input         = Input
     @menu          = Menu.new(self)
     @current_level = 0
+    @current_floor = 1
+
+    @map     = nil
+    @doors   = []
+    @keys    = []
+    @pickups = []
+    @chests  = []
+    @enemies = []
+    @boss_dead = false
   end
 
   # -------------------------------------------------------------
-  # START GAME
+  # START GAME (NORMAL)
   # -------------------------------------------------------------
   def start_game
+    @rogue_mode    = false
     @state         = :playing
     @current_level = 0
     load_level(LEVEL_ORDER[@current_level])
+  end
+
+  # -------------------------------------------------------------
+  # START ROGUE MODE
+  # -------------------------------------------------------------
+  def start_rogue_mode
+    @rogue_mode    = true
+    @state         = :playing
+    @current_floor = 1
+    load_rogue_floor
+  end
+
+  def load_rogue_floor
+    floor = RogueFloor.new(@current_floor)
+
+    @map     = floor.map
+    @doors   = []
+    @keys    = []
+    @pickups = []
+
+    @chests = floor.chests.map { |c| Chest.new(c[:x], c[:y], c[:props]) }
+
+    @enemies = floor.enemies.map do |e|
+      Enemy.new(e[:x], e[:y], e[:props]["hp"], type: e[:type], props: e[:props])
+    end
+
+    boss = floor.boss
+    @boss = Enemy.new(
+      boss[:x],
+      boss[:y],
+      boss[:props]["hp"],
+      type: boss[:type],
+      props: boss[:props]
+    )
+    @enemies << @boss
+
+    @exit = floor.exit_tile
+    @boss_dead = false
+
+    if @player
+      @player.x = @map.spawn_point[:x]
+      @player.y = @map.spawn_point[:y]
+    else
+      @player = Player.new(@map.spawn_point[:x], @map.spawn_point[:y])
+    end
+
+    $player = @player
+
+    @physics = Physics.new(@map, [])
+    @combat  = Combat.new
+
+    @camera = Camera.new(@player, WIDTH / SCALE, HEIGHT / SCALE)
+    @camera.set_map(@map)
+
+    @ui = UI.new(self, @player)
+
+    @enemy_system = EnemySystem.new(@enemies)
   end
 
   # -------------------------------------------------------------
@@ -72,7 +147,7 @@ class Game < Gosu::Window
   end
 
   # -------------------------------------------------------------
-  # LOAD LEVEL
+  # LOAD LEVEL (NORMAL MODE)
   # -------------------------------------------------------------
   def load_level(path)
     @map    = Map.new(path)
@@ -124,7 +199,7 @@ class Game < Gosu::Window
   end
 
   # -------------------------------------------------------------
-  # NEXT LEVEL
+  # NEXT LEVEL (NORMAL)
   # -------------------------------------------------------------
   def next_level
     @current_level += 1
@@ -167,34 +242,85 @@ class Game < Gosu::Window
       return
 
     when :playing
-      @player.update(@input, @physics, self)
-
-      if @player.hp <= 0
-        log_death("Killed by #{ @player.last_hit_by || 'Unknown' }")
-        @state = :dead
-        return
+      if @rogue_mode
+        update_rogue_mode
+      else
+        update_normal_mode
       end
-
-      @enemy_system.update(@player, @physics, @ui)
-      @combat.update(@player, @enemies, @map, @ui)
-
-      @projectiles.each { |p| p.update(@map, @enemies, @ui) }
-      @projectiles.reject!(&:dead)
-
-      @pickups.each { |p| p.update(@player) }
-      @pickups.reject!(&:dead)
-
-      @keys.each { |k| k.update(@player) }
-      @keys.reject!(&:dead)
-
-      @chests.each { |c| c.update(@player, @ui) }
-      @doors.each  { |d| d.update(@player, @map) }
-
-      @player.update_hotbar(@input, self)
-
-      @camera.update
-      @ui.update
     end
+  end
+
+  def update_normal_mode
+    @player.update(@input, @physics, self)
+
+    if @player.hp <= 0
+      log_death("Killed by #{@player.last_hit_by || 'Unknown'}")
+      @state = :dead
+      return
+    end
+
+    @enemy_system.update(@player, @physics, @ui)
+    @combat.update(@player, @enemies, @map, @ui)
+
+    @projectiles.each { |p| p.update(@map, @enemies, @ui) }
+    @projectiles.reject!(&:dead)
+
+    @pickups.each { |p| p.update(@player) }
+    @pickups.reject!(&:dead)
+
+    @keys.each { |k| k.update(@player) }
+    @keys.reject!(&:dead)
+
+    @chests.each { |c| c.update(@player, @ui) }
+    @doors.each  { |d| d.update(@player, @map) }
+
+    @player.update_hotbar(@input, self)
+
+    @camera.update
+    @ui.update
+  end
+
+  def update_rogue_mode
+    @player.update(@input, @physics, self)
+
+    if @player.hp <= 0
+      log_death("Killed by #{@player.last_hit_by || 'Unknown'}")
+      @state = :dead
+      return
+    end
+
+    @enemy_system.update(@player, @physics, @ui)
+    @combat.update(@player, @enemies, @map, @ui)
+
+    @boss_dead = @boss && @boss.dead?
+
+    @projectiles.each { |p| p.update(@map, @enemies, @ui) }
+    @projectiles.reject!(&:dead)
+
+    @chests.each { |c| c.update(@player, @ui) }
+
+    if @boss_dead && touching_exit?(@player, @exit)
+      @current_floor += 1
+      load_rogue_floor
+      return
+    end
+
+    @player.update_hotbar(@input, self)
+
+    @camera.update
+    @ui.update
+  end
+
+  def touching_exit?(player, exit)
+    return false unless exit
+    px = player.x
+    py = player.y
+    ex = exit[:x]
+    ey = exit[:y]
+    ew = exit[:width]
+    eh = exit[:height]
+
+    px.between?(ex, ex + ew) && py.between?(ey, ey + eh)
   end
 
   # -------------------------------------------------------------
@@ -203,7 +329,7 @@ class Game < Gosu::Window
   def log_death(cause)
     entry = {
       name:  "Player",
-      floor: @current_level + 1,
+      floor: @rogue_mode ? @current_floor : @current_level + 1,
       kills: @player.kills,
       time:  format_time(@player.play_time),
       cause: cause
@@ -262,9 +388,16 @@ class Game < Gosu::Window
     super if defined?(super)
   end
 
-  def restart_game
-    initialize
-  end
+def restart_game
+  Input.clear
+  initialize
+  @player = nil
+  @state = :menu
+end
+def rogue_mode?
+  @rogue_mode
+end
+
 
   # -------------------------------------------------------------
   # DRAW LOOP
@@ -288,20 +421,30 @@ class Game < Gosu::Window
       return
     end
 
-    # PLAYING
     Gosu.scale(SCALE, SCALE) do
       @map.draw(@camera.x, @camera.y, WIDTH, HEIGHT)
       @player.draw(@camera.x, @camera.y)
       @enemies.each { |e| e.draw(@camera.x, @camera.y) }
       @pickups.each { |p| p.draw(@camera.x, @camera.y) }
-      @keys.each    { |k| k.draw(@camera.x, @camera.y) }
+
+      unless @rogue_mode
+        @keys.each   { |k| k.draw(@camera.x, @camera.y) }
+        @doors.each  { |d| d.draw(@camera.x, @camera.y) }
+      end
+
       @chests.each  { |c| c.draw(@camera.x, @camera.y) }
-      @doors.each   { |d| d.draw(@camera.x, @camera.y) }
       @combat.draw(@camera.x, @camera.y)
       @projectiles.each { |p| p.draw(@camera.x, @camera.y) }
+
+      if @rogue_mode && @exit
+        img = @boss_dead ? @open_portal_img : @closed_portal_img
+        img.draw(@exit[:x] - @camera.x, @exit[:y] - @camera.y, 5)
+      end
+
       @ui.draw_world(@camera.x, @camera.y)
     end
 
     @ui.draw_hud
+    @ui.draw_rogue_floor(@current_floor) if @rogue_mode
   end
 end

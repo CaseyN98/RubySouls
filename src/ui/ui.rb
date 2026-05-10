@@ -390,4 +390,13 @@ class UI
     Gosu.draw_rect(x, y, w, h, Gosu::Color::argb(0xaa_666666), 90)
     Gosu.draw_rect(x, y, w * ratio, h, color, 91)
   end
+  # -------------------------------------------------------------
+# Rogue Mode floor indicator (optional)
+# -------------------------------------------------------------
+def draw_rogue_floor(floor)
+  return unless @font
+  @font.draw_text("Floor #{floor}", 20, 100, 100, 1.2, 1.2, Gosu::Color::WHITE)
+end
+
+
 end

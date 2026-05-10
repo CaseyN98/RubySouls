@@ -3,92 +3,22 @@
     "inputs": ["iron_sword", "iron_axe"],
     "output": "black_sword"
   },
-    "black_sword_1": {
-    "inputs": ["black_sword", "black_sword"],
-    "output": "black_sword_1"
-  },
-    "black_sword_2": {
-    "inputs": ["black_sword_1", "black_sword_1"],
-    "output": "black_sword_2"
-  },
 
   "fire_sword": {
     "inputs": ["iron_sword", "fire_orb"],
     "output": "fire_sword"
-  },
-  "fire_sword_1": {
-    "inputs": ["fire_sword", "upgrade_stone"],
-    "output": "fire_sword_1"
-  },
-  "fire_sword_2": {
-    "inputs": ["fire_sword_1", "upgrade_stone"],
-    "output": "fire_sword_2"
-  },
-  "fire_sword_3": {
-    "inputs": ["fire_sword_2", "upgrade_stone"],
-    "output": "fire_sword_3"
   },
 
   "flame_bow": {
     "inputs": ["wooden_bow", "fire_orb"],
     "output": "flame_bow"
   },
-  "flame_bow_1": {
-    "inputs": ["flame_bow", "upgrade_stone"],
-    "output": "flame_bow_1"
-  },
-  "flame_bow_2": {
-    "inputs": ["flame_bow_1", "upgrade_stone"],
-    "output": "flame_bow_2"
-  },
-  "flame_bow_3": {
-    "inputs": ["flame_bow_2", "upgrade_stone"],
-    "output": "flame_bow_3"
-  },
-
-  "iron_axe_1": {
-    "inputs": ["iron_axe", "upgrade_stone"],
-    "output": "iron_axe_1"
-  },
-  "iron_axe_2": {
-    "inputs": ["iron_axe_1", "iron_axe_1"],
-    "output": "iron_axe_2"
-  },
-  "iron_axe_3": {
-    "inputs": ["iron_axe_2", "upgrade_stone"],
-    "output": "iron_axe_3"
-  },
-
-  "iron_sword_1": {
-    "inputs": ["iron_sword", "upgrade_stone"],
-    "output": "iron_sword_1"
-  },
-  "iron_sword_2": {
-    "inputs": ["iron_sword_1", "iron_sword_1"],
-    "output": "iron_sword_2"
-  },
-  "iron_sword_3": {
-    "inputs": ["iron_sword_2", "upgrade_stone"],
-    "output": "iron_sword_3"
-  },
-
-  "wooden_bow_1": {
-    "inputs": ["wooden_bow", "upgrade_stone"],
-    "output": "wooden_bow_1"
-  },
-  "wooden_bow_2": {
-    "inputs": ["wooden_bow_1", "wooden_bow_1"],
-    "output": "wooden_bow_2"
-  },
-  "wooden_bow_3": {
-    "inputs": ["wooden_bow_2", "upgrade_stone"],
-    "output": "wooden_bow_3"
-  },
 
   "level_warp": {
     "inputs": ["fire_orb", "water_orb", "master_key_1_3"],
     "output": "level_warp"
   },
+
   "level_warp_2": {
     "inputs": ["fire_orb", "water_orb", "master_key_7_9"],
     "output": "level_warp"
@@ -112,31 +42,5 @@
   "master_key_7_9": {
     "inputs": ["key_7", "key_8", "key_9"],
     "output": "master_key_7_9"
-  },
-
-  "health_potion_1": {
-    "inputs": ["health_potion", "health_potion"],
-    "output": "health_potion_1"
-  },
-  "health_potion_2": {
-    "inputs": ["health_potion_1", "health_potion_1"],
-    "output": "health_potion_2"
-  },
-  "health_potion_3": {
-    "inputs": ["health_potion_2", "health_potion_2"],
-    "output": "health_potion_3"
-  },
-
-  "stamina_potion_1": {
-    "inputs": ["stamina_potion", "stamina_potion"],
-    "output": "stamina_potion_1"
-  },
-  "stamina_potion_2": {
-    "inputs": ["stamina_potion_1", "stamina_potion_1"],
-    "output": "stamina_potion_2"
-  },
-  "stamina_potion_3": {
-    "inputs": ["stamina_potion_2", "stamina_potion_2"],
-    "output": "stamina_potion_3"
   }
 }

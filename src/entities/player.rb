@@ -21,9 +21,6 @@ class Player
 
   HIT_FRAME = 2
 
-  # -------------------------------------------------------------
-  # Animation loader
-  # -------------------------------------------------------------
   def load_animation(path, frame_count)
     return nil unless File.exist?(path)
     img = Gosu::Image.new(path, retro: true)
@@ -36,9 +33,6 @@ class Player
     nil
   end
 
-  # -------------------------------------------------------------
-  # Initialization
-  # -------------------------------------------------------------
   def initialize(x, y)
     @x, @y = x, y
     @inventory_open = false
@@ -87,9 +81,6 @@ class Player
     @inventory_open
   end
 
-  # -------------------------------------------------------------
-  # XP + LEVELING
-  # -------------------------------------------------------------
   def gain_xp(amount)
     @xp += amount
     check_level_up
@@ -107,26 +98,36 @@ class Player
     @hp       = max_hp
     @stamina  = max_stamina
     @base_attack  += 2
-    @base_defense += 1
+    @base_defense += 5
     @xp_to_next = (100 * (@level ** 1.5)).to_i
     puts "LEVEL UP! You are now level #{@level}"
   end
 
-  # -------------------------------------------------------------
-  # Equipment + stats
-  # -------------------------------------------------------------
   def equipped_weapon
     @inventory.equipped_weapon
   end
 
   def attack_power
-    weapon_bonus = equipped_weapon ? (equipped_weapon.props[:atk] || 0) : 0
+    weapon = equipped_weapon
+    weapon_bonus =
+      if weapon
+        weapon.props[:atk] || weapon.props["atk"] || 0
+      else
+        0
+      end
+
     @base_attack + weapon_bonus
   end
 
   def defense_power
-    armor       = @inventory.respond_to?(:equipped_armor) ? @inventory.equipped_armor : nil
-    armor_bonus = armor ? (armor.props[:def] || 0) : 0
+    armor = @inventory.respond_to?(:equipped_armor) ? @inventory.equipped_armor : nil
+    armor_bonus =
+      if armor
+        armor.props[:def] || armor.props["def"] || 0
+      else
+        0
+      end
+
     @base_defense + armor_bonus
   end
 
@@ -138,9 +139,6 @@ class Player
     STAMINA_MAX + (@level * 10)
   end
 
-  # -------------------------------------------------------------
-  # Update
-  # -------------------------------------------------------------
   def update(input, collision, game)
     @play_time += 1.0 / 60.0
     handle_hotbar_scroll(input)
@@ -159,9 +157,6 @@ class Player
     regen_stamina
   end
 
-  # -------------------------------------------------------------
-  # HOTBAR (UI confirm = use item)
-  # -------------------------------------------------------------
   def update_hotbar(input, game)
     use_hotbar_item(game) if input.ui_confirm_pressed?
   end
@@ -179,22 +174,20 @@ class Player
     end
   end
 
-  # -------------------------------------------------------------
-  # HOTBAR USAGE
-  # -------------------------------------------------------------
   def use_hotbar_item(game = nil)
     item = @inventory.selected_item
     return unless item
 
     case item.kind
     when "consumable"
-      if item.props[:heal]
-        @hp = [@hp + item.props[:heal], max_hp].min
+      if item.props[:heal] || item.props["heal"]
+        heal = item.props[:heal] || item.props["heal"]
+        @hp = [@hp + heal, max_hp].min
       end
 
-      if item.props[:stamina_buff]
-        @stamina_regen_multiplier = item.props[:multiplier] || 2.0
-        @stamina_buff_timer       = item.props[:duration]   || 300
+      if item.props[:stamina_buff] || item.props["stamina_buff"]
+        @stamina_regen_multiplier = item.props[:multiplier] || item.props["multiplier"] || 2.0
+        @stamina_buff_timer       = item.props[:duration]   || item.props["duration"]   || 300
       end
 
       @inventory.remove(item)
@@ -210,9 +203,6 @@ class Player
     end
   end
 
-  # -------------------------------------------------------------
-  # Pickup
-  # -------------------------------------------------------------
   def pickup(item)
     if (item.kind == "weapon" || item.kind == "bow") && @inventory.equipped_weapon.nil?
       @inventory.equip_weapon(item)
@@ -221,7 +211,6 @@ class Player
 
     @inventory.add(item)
 
-    # Do NOT auto-assign keys to hotbar
     unless item.kind == "key"
       @inventory.hotbar.slots.each_with_index do |slot, i|
         if slot.nil?
@@ -232,24 +221,22 @@ class Player
     end
   end
 
-  # -------------------------------------------------------------
-  # Combat
-  # -------------------------------------------------------------
   def hit(dmg, source=nil)
     return if @invulnerable
     @hp = [@hp - dmg, 0].max
-    @last_hit_by = source.type if source && source.respond_to?(:type)
+
+    if source && source.respond_to?(:name)
+      @last_hit_by = source.name
+    elsif source && source.respond_to?(:type)
+      @last_hit_by = source.type
+    end
   end
 
   def hit_frame?
     @state == :atk && @frame == HIT_FRAME
   end
 
-  # -------------------------------------------------------------
-  # Movement + state
-  # -------------------------------------------------------------
   def update_state_and_direction(input, game)
-    # ROLLING
     if @state == :roll
       @roll_timer -= 1
 
@@ -268,7 +255,6 @@ class Player
       return
     end
 
-    # START ROLL
     if input.roll_pressed? && @stamina >= ROLL_COST
       @state        = :roll
       @stamina     -= ROLL_COST
@@ -278,7 +264,6 @@ class Player
       return
     end
 
-    # ATTACK
     if input.attack_pressed?
       if equipped_weapon && equipped_weapon.kind == "bow"
         if @stamina >= BOW_STAMINA_COST
@@ -299,13 +284,11 @@ class Player
       end
     end
 
-    # Attack freeze frames
     if @state == :atk && @frame < 5
       @vx = @vy = 0
       return
     end
 
-    # MOVEMENT
     @vx = input.move_x * SPEED
     @vy = input.move_y * SPEED
 
@@ -321,9 +304,6 @@ class Player
     end
   end
 
-  # -------------------------------------------------------------
-  # Projectile
-  # -------------------------------------------------------------
   def fire_projectile(game)
     bow = equipped_weapon
     return unless bow && bow.kind == "bow"
@@ -336,7 +316,7 @@ class Player
       when :up    then -Math::PI / 2
       end
 
-    dmg = bow.props[:atk] || 5
+    dmg = bow.props[:atk] || bow.props["atk"] || 5
 
     game.projectiles << Projectile.new(@x, @y, angle, damage: dmg, owner: self)
 
@@ -349,9 +329,6 @@ class Player
     end
   end
 
-  # -------------------------------------------------------------
-  # Animation
-  # -------------------------------------------------------------
   def update_animation
     if Gosu.milliseconds - @last_frame_time > 100
       @frame = (@frame + 1) % 6
@@ -363,9 +340,6 @@ class Player
     @attack_hit_applied = true
   end
 
-  # -------------------------------------------------------------
-  # Regen
-  # -------------------------------------------------------------
   def regen_stamina
     regen    = 0.2 * @stamina_regen_multiplier
     @stamina = [@stamina + regen, max_stamina].min
@@ -376,9 +350,6 @@ class Player
     end
   end
 
-  # -------------------------------------------------------------
-  # Draw
-  # -------------------------------------------------------------
   def draw(cam_x, cam_y)
     anim_set = @animations[@state][@direction]
 
