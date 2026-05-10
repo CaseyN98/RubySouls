@@ -41,22 +41,22 @@ class UI
   # -------------------------------------------------------------
   # UPDATE
   # -------------------------------------------------------------
-  def update
-    update_damage_numbers
-    update_crafting_toggle
-    update_mouse_tracking
+def update
+  update_damage_numbers
+  update_crafting_toggle
+  update_mouse_tracking
 
-    if @player.inventory_open?
-      update_inventory_navigation
-      update_crafting_input
-      update_hotbar_assignment
-      update_craft_button
-      update_weapon_unequip
-    else
-      reset_inventory_state
-    end
-	update_weapon_unequip
+  if @player.inventory_open?
+    update_inventory_navigation
+    update_crafting_input
+    update_hotbar_assignment
+    update_craft_button
+  else
+    reset_inventory_state
+    update_weapon_unequip
   end
+end
+
 
   # -------------------------------------------------------------
   # UPDATE HELPERS
@@ -137,43 +137,46 @@ class UI
     end
   end
 
-  def update_craft_button
-    return unless @crafting_mode
-    return unless @selected_for_craft.size >= 2
+def update_craft_button
+  return unless @crafting_mode
+  return unless @selected_for_craft.size >= 2
 
-    bx = 100
-    by = 380
-    bw = 140
-    bh = 40
+  bx = 100
+  by = 380
+  bw = 140
+  bh = 40
 
-    mx, my = Input.mouse_pos(@window)
+  mx, my = Input.mouse_pos(@window)
 
-    hovering =
-      mx.between?(bx, bx + bw) &&
-      my.between?(by, by + bh)
+  hovering =
+    mx.between?(bx, bx + bw) &&
+    my.between?(by, by + bh)
 
-    try_craft if Input.craft_confirm_down?
-    try_craft if hovering && Input.mouse_left_pressed?
+  try_craft if Input.craft_confirm_down?
+  try_craft if hovering && Input.mouse_left_down?
+end
+
+
+def update_weapon_unequip
+  base_x = 20
+  base_y = 80
+
+  mx, my = Input.mouse_pos(@window)
+
+  hovered_weapon_slot =
+    mx.between?(base_x, base_x + SLOT_SIZE) &&
+    my.between?(base_y, base_y + SLOT_SIZE)
+
+  if hovered_weapon_slot && Input.mouse_left_pressed?
+    unequip_weapon
   end
 
-  def update_weapon_unequip
-    base_x = 20
-    base_y = 80
-
-    mx, my = Input.mouse_pos(@window)
-
-    hovered_weapon_slot =
-      mx.between?(base_x, base_x + SLOT_SIZE) &&
-      my.between?(base_y, base_y + SLOT_SIZE)
-
-    if hovered_weapon_slot && Input.mouse_left_pressed?
-      unequip_weapon
-    end
-
-    if Input.drop_pressed?
-      unequip_weapon
-    end
+  if Input.drop_pressed?
+    unequip_weapon
   end
+end
+
+
 
   def reset_inventory_state
     @hovered_item  = nil
