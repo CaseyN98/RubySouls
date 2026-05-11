@@ -20,6 +20,28 @@
     "sprite": "assets/items/black_sword.png",
     "icon": "assets/items/black_sword.png"
   },
+  "black_sword_3": {
+  "name": "Black Blade +3",
+  "kind": "weapon",
+  "atk": 50,
+  "sprite": "assets/items/black_sword.png",
+  "icon": "assets/items/black_sword.png"
+},
+"black_sword_4": {
+  "name": "Black Blade +4",
+  "kind": "weapon",
+  "atk": 60,
+  "sprite": "assets/items/black_sword.png",
+  "icon": "assets/items/black_sword.png"
+},
+"black_sword_5": {
+  "name": "Black Blade +5",
+  "kind": "weapon",
+  "atk": 70,
+  "sprite": "assets/items/black_sword.png",
+  "icon": "assets/items/black_sword.png"
+},
+
 
   "fire_orb": {
     "name": "Fire Orb",
@@ -56,6 +78,21 @@
     "sprite": "assets/items/fire_sword.png",
     "icon": "assets/items/fire_sword.png"
   },
+  "fire_sword_4": {
+  "name": "Fire Sword +4",
+  "kind": "weapon",
+  "atk": 65,
+  "sprite": "assets/items/fire_sword.png",
+  "icon": "assets/items/fire_sword.png"
+},
+"fire_sword_5": {
+  "name": "Fire Sword +5",
+  "kind": "weapon",
+  "atk": 75,
+  "sprite": "assets/items/fire_sword.png",
+  "icon": "assets/items/fire_sword.png"
+},
+
 
   "flame_bow": {
     "name": "Flame Bow",
@@ -89,6 +126,23 @@
     "sprite": "assets/items/flame_bow.png",
     "icon": "assets/items/flame_bow.png"
   },
+  "flame_bow_4": {
+  "name": "Flame Bow +4",
+  "kind": "bow",
+  "atk": 59,
+  "durability": 120,
+  "sprite": "assets/items/flame_bow.png",
+  "icon": "assets/items/flame_bow.png"
+},
+"flame_bow_5": {
+  "name": "Flame Bow +5",
+  "kind": "bow",
+  "atk": 69,
+  "durability": 140,
+  "sprite": "assets/items/flame_bow.png",
+  "icon": "assets/items/flame_bow.png"
+},
+
 
   "health_potion": {
     "name": "Health Potion",
@@ -118,8 +172,37 @@
     "sprite": "assets/items/health_potion.png",
     "icon": "assets/items/health_potion.png"
   },
+  "health_potion_4": {
+  "name": "Health Potion +4",
+  "kind": "consumable",
+  "heal": 110,
+  "sprite": "assets/items/health_potion.png",
+  "icon": "assets/items/health_potion.png"
+},
+"health_potion_5": {
+  "name": "Health Potion +5",
+  "kind": "consumable",
+  "heal": 130,
+  "sprite": "assets/items/health_potion.png",
+  "icon": "assets/items/health_potion.png"
+},
 
-  "iron_axe": {
+  "spiked_club": {
+    "name": "Spiked Club",
+    "kind": "weapon",
+    "atk": 25,
+    "sprite": "assets/items/spiked_club.png",
+    "icon": "assets/items/spiked_club.png"
+  },
+    "flame_club": {
+    "name": "Flame Club",
+    "kind": "weapon",
+    "atk": 36,
+    "sprite": "assets/items/flame_club.png",
+    "icon": "assets/items/flame_club.png"
+  },
+ 
+ "iron_axe": {
     "name": "Iron Axe",
     "kind": "weapon",
     "atk": 17,
@@ -147,6 +230,21 @@
     "sprite": "assets/items/iron_axe.png",
     "icon": "assets/items/iron_axe.png"
   },
+  "iron_axe_4": {
+  "name": "Iron Axe +4",
+  "kind": "weapon",
+  "atk": 46,
+  "sprite": "assets/items/iron_axe.png",
+  "icon": "assets/items/iron_axe.png"
+},
+"iron_axe_5": {
+  "name": "Iron Axe +5",
+  "kind": "weapon",
+  "atk": 56,
+  "sprite": "assets/items/iron_axe.png",
+  "icon": "assets/items/iron_axe.png"
+},
+
 
   "iron_sword": {
     "name": "Iron Sword",
@@ -176,6 +274,21 @@
     "sprite": "assets/items/iron_sword.png",
     "icon": "assets/items/iron_sword.png"
   },
+  "iron_sword_4": {
+  "name": "Iron Sword +4",
+  "kind": "weapon",
+  "atk": 46,
+  "sprite": "assets/items/iron_sword.png",
+  "icon": "assets/items/iron_sword.png"
+},
+"iron_sword_5": {
+  "name": "Iron Sword +5",
+  "kind": "weapon",
+  "atk": 56,
+  "sprite": "assets/items/iron_sword.png",
+  "icon": "assets/items/iron_sword.png"
+},
+
 
   "key_0": {
     "name": "Key 0",
@@ -320,6 +433,29 @@
       "duration": 1800
     }
   },
+  "stamina_potion_4": {
+  "name": "Stamina Potion +4",
+  "kind": "consumable",
+  "sprite": "assets/items/stamina_potion.png",
+  "icon": "assets/items/stamina_potion.png",
+  "props": {
+    "stamina_buff": true,
+    "multiplier": 5.0,
+    "duration": 2200
+  }
+},
+"stamina_potion_5": {
+  "name": "Stamina Potion +5",
+  "kind": "consumable",
+  "sprite": "assets/items/stamina_potion.png",
+  "icon": "assets/items/stamina_potion.png",
+  "props": {
+    "stamina_buff": true,
+    "multiplier": 5.0,
+    "duration": 2600
+  }
+},
+
 
   "upgrade_stone": {
     "name": "Upgrade Stone",
@@ -333,6 +469,30 @@
     "kind": "material",
     "sprite": "assets/items/water_orb.png",
     "icon": "assets/items/water_orb.png"
+  },
+    "water_staff": {
+    "name": "Water Staff",
+    "kind": "bow",
+	"atk": 30,
+	"durability": 30,
+    "sprite": "assets/items/water_staff.png",
+    "icon": "assets/items/water_staff.png"
+  },
+      "water_sword": {
+    "name": "Water Sword",
+    "kind": "bow",
+	"atk": 49,
+	"durability": 30,
+    "sprite": "assets/items/water_sword.png",
+    "icon": "assets/items/water_sword.png"
+  },
+      "water_bow": {
+    "name": "Water Bow",
+    "kind": "bow",
+	"atk": 25,
+	"durability": 30,
+    "sprite": "assets/items/water_bow.png",
+    "icon": "assets/items/water_bow.png"
   },
 
   "wooden_bow": {
@@ -366,5 +526,182 @@
     "durability": 90,
     "sprite": "assets/items/wooden_bow.png",
     "icon": "assets/items/wooden_bow.png"
-  }
+  },
+  "flame_club_1": {
+  "name": "Flame Club +1",
+  "kind": "weapon",
+  "atk": 44,
+  "sprite": "assets/items/flame_club.png",
+  "icon": "assets/items/flame_club.png"
+},
+"flame_club_2": {
+  "name": "Flame Club +2",
+  "kind": "weapon",
+  "atk": 52,
+  "sprite": "assets/items/flame_club.png",
+  "icon": "assets/items/flame_club.png"
+},
+"flame_club_3": {
+  "name": "Flame Club +3",
+  "kind": "weapon",
+  "atk": 60,
+  "sprite": "assets/items/flame_club.png",
+  "icon": "assets/items/flame_club.png"
+},
+"flame_club_4": {
+  "name": "Flame Club +4",
+  "kind": "weapon",
+  "atk": 70,
+  "sprite": "assets/items/flame_club.png",
+  "icon": "assets/items/flame_club.png"
+},
+"flame_club_5": {
+  "name": "Flame Club +5",
+  "kind": "weapon",
+  "atk": 80,
+  "sprite": "assets/items/flame_club.png",
+  "icon": "assets/items/flame_club.png"
+},
+
+"water_staff_1": {
+  "name": "Water Staff +1",
+  "kind": "weapon",
+  "durability": 50,
+  "atk": 38,
+  "sprite": "assets/items/water_staff.png",
+  "icon": "assets/items/water_staff.png"
+},
+"water_staff_2": {
+  "name": "Water Staff +2",
+  "kind": "weapon",
+  "durability": 70,
+  "atk": 42,
+  "sprite": "assets/items/water_staff.png",
+  "icon": "assets/items/water_staff.png"
+},
+"water_staff_3": {
+  "name": "Water Staff +3",
+  "kind": "weapon",
+  "durability": 90,
+  "atk": 55,
+  "sprite": "assets/items/water_staff.png",
+  "icon": "assets/items/water_staff.png"
+},
+"water_staff_4": {
+  "name": "Water Staff +4",
+  "kind": "weapon",
+  "atk": 65,
+  "durability": 110,
+  "sprite": "assets/items/water_staff.png",
+  "icon": "assets/items/water_staff.png"
+},
+"water_staff_5": {
+  "name": "Water Staff +5",
+  "kind": "weapon",
+  "atk": 75,
+  "durability": 130,
+  "sprite": "assets/items/water_staff.png",
+  "icon": "assets/items/water_staff.png"
+},
+
+"water_sword_1": {
+  "name": "Water Sword +1",
+  "kind": "weapon",
+  "atk": 57,
+  "durability": 50,
+  "sprite": "assets/items/water_sword.png",
+  "icon": "assets/items/water_sword.png"
+},
+"water_sword_2": {
+  "name": "Water Sword +2",
+  "kind": "weapon",
+  "atk": 65,
+  "durability": 70,
+  "sprite": "assets/items/water_sword.png",
+  "icon": "assets/items/water_sword.png"
+},
+"water_sword_3": {
+  "name": "Water Sword +3",
+  "kind": "weapon",
+  "atk": 73,
+  "durability": 90,
+  "sprite": "assets/items/water_sword.png",
+  "icon": "assets/items/water_sword.png"
+},
+"water_sword_4": {
+  "name": "Water Sword +4",
+  "kind": "weapon",
+  "atk": 83,
+  "durability": 110,
+  "sprite": "assets/items/water_sword.png",
+  "icon": "assets/items/water_sword.png"
+},
+"water_sword_5": {
+  "name": "Water Sword +5",
+  "kind": "weapon",
+  "atk": 93,
+  "durability": 130,
+  "sprite": "assets/items/water_sword.png",
+  "icon": "assets/items/water_sword.png"
+},
+
+"water_bow_1": {
+  "name": "Water Bow +1",
+  "kind": "bow",
+  "atk": 33,
+  "durability": 50,
+  "sprite": "assets/items/water_bow.png",
+  "icon": "assets/items/water_bow.png"
+},
+"water_bow_2": {
+  "name": "Water Bow +2",
+  "kind": "bow",
+  "atk": 41,
+  "durability": 70,
+  "sprite": "assets/items/water_bow.png",
+  "icon": "assets/items/water_bow.png"
+},
+"water_bow_3": {
+  "name": "Water Bow +3",
+  "kind": "bow",
+  "atk": 49,
+  "durability": 90,
+  "sprite": "assets/items/water_bow.png",
+  "icon": "assets/items/water_bow.png"
+},
+"water_bow_4": {
+  "name": "Water Bow +4",
+  "kind": "bow",
+  "atk": 59,
+  "durability": 110,
+  "sprite": "assets/items/water_bow.png",
+  "icon": "assets/items/water_bow.png"
+},
+"water_bow_5": {
+  "name": "Water Bow +5",
+  "kind": "bow",
+  "atk": 69,
+  "durability": 130,
+  "sprite": "assets/items/water_bow.png",
+  "icon": "assets/items/water_bow.png"
+},
+"wooden_bow_4": {
+  "name": "Wooden Bow +4",
+  "kind": "bow",
+  "atk": 42,
+  "durability": 110,
+  "sprite": "assets/items/wooden_bow.png",
+  "icon": "assets/items/wooden_bow.png"
+},
+"wooden_bow_5": {
+  "name": "Wooden Bow +5",
+  "kind": "bow",
+  "atk": 52,
+  "durability": 130,
+  "sprite": "assets/items/wooden_bow.png",
+  "icon": "assets/items/wooden_bow.png"
+}
+
+
+
 }

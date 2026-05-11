@@ -37,8 +37,9 @@ class CraftingSystem
   # -------------------------------------------------------------
   # ELEMENT INFUSION (fire orb → flame weapons)
   # -------------------------------------------------------------
-  def element_infuse(item_ids)
-    return nil unless item_ids.include?("fire_orb")
+def element_infuse(item_ids)
+  # FIRE infusion
+  if item_ids.include?("fire_orb")
     other = item_ids.find { |id| id != "fire_orb" }
     return nil unless other
 
@@ -54,8 +55,39 @@ class CraftingSystem
       return tier.zero? ? "flame_bow" : "flame_bow_#{tier}"
     end
 
-    nil
+    # spiked_club → flame_club
+    if other.start_with?("spiked_club")
+      tier = extract_tier(other)
+      return tier.zero? ? "flame_club" : "flame_club_#{tier}"
+    end
   end
+
+  # WATER infusion
+  if item_ids.include?("water_orb")
+    other = item_ids.find { |id| id != "water_orb" }
+    return nil unless other
+
+    # iron_sword_* → water_sword_*
+    if other.start_with?("iron_sword")
+      tier = extract_tier(other)
+      return tier.zero? ? "water_sword" : "water_sword_#{tier}"
+    end
+
+    # wooden_bow_* → water_bow_*
+    if other.start_with?("wooden_bow")
+      tier = extract_tier(other)
+      return tier.zero? ? "water_bow" : "water_bow_#{tier}"
+    end
+
+    # spiked_club → water_staff
+    if other.start_with?("spiked_club")
+      tier = extract_tier(other)
+      return tier.zero? ? "water_staff" : "water_staff_#{tier}"
+    end
+  end
+
+  nil
+end
 
   # Extract tier number from id (iron_sword_3 → 3)
   def extract_tier(id)

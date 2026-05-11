@@ -14,12 +14,32 @@
     "output": "flame_bow"
   },
 
-  "level_warp": {
+  "flame_club": {
+    "inputs": ["spiked_club", "fire_orb"],
+    "output": "flame_club"
+  },
+
+  "water_staff": {
+    "inputs": ["spiked_club", "water_orb"],
+    "output": "water_staff"
+  },
+
+  "water_sword": {
+    "inputs": ["iron_sword", "water_orb"],
+    "output": "water_sword"
+  },
+
+  "water_bow": {
+    "inputs": ["wooden_bow", "water_orb"],
+    "output": "water_bow"
+  },
+
+  "level_warp_1_3": {
     "inputs": ["fire_orb", "water_orb", "master_key_1_3"],
     "output": "level_warp"
   },
 
-  "level_warp_2": {
+  "level_warp_7_9": {
     "inputs": ["fire_orb", "water_orb", "master_key_7_9"],
     "output": "level_warp"
   },

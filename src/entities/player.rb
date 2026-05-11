@@ -264,15 +264,45 @@ class Player
       return
     end
 
-    if input.attack_pressed?
-      if equipped_weapon && equipped_weapon.kind == "bow"
-        if @stamina >= BOW_STAMINA_COST
-          @stamina -= BOW_STAMINA_COST
-          fire_projectile(game)
-          @state = :walk
-        end
-        return
-      end
+if input.attack_pressed?
+  weapon = equipped_weapon
+
+  # ---------------------------------------------------------
+  # BOW PROJECTILES
+  # ---------------------------------------------------------
+  if weapon && weapon.kind == "bow"
+    if @stamina >= BOW_STAMINA_COST
+      @stamina -= BOW_STAMINA_COST
+      fire_projectile(game)
+      @state = :walk
+    end
+    return
+  end
+
+if weapon && weapon.kind == "weapon"
+  # Only these melee weapons (and their upgrades) fire orbs
+  base_allowed = ["water_staff", "water_sword", "flame_staff"]
+
+  # Accept base IDs AND any _1, _2, _3, etc.
+  allowed = base_allowed.flat_map { |id| [id, "#{id}_1", "#{id}_2", "#{id}_3"] }
+
+  if allowed.include?(weapon.id)
+    if @stamina >= ATTACK_STAMINA_COST
+      @stamina -= ATTACK_STAMINA_COST
+      fire_melee_projectile(game, weapon)
+    end
+
+    @state              = :atk
+    @frame              = 0
+    @attack_hit_applied = false
+    @vx = @vy           = 0
+    return
+  end
+end
+
+
+
+
 
       if @stamina >= ATTACK_STAMINA_COST && @state != :atk
         @state              = :atk
@@ -303,31 +333,85 @@ class Player
       @state = :idle
     end
   end
+def fire_melee_projectile(game, weapon)
+  angle =
+    case @direction
+    when :right then 0
+    when :down  then Math::PI / 2
+    when :left  then Math::PI
+    when :up    then -Math::PI / 2
+    end
 
-  def fire_projectile(game)
-    bow = equipped_weapon
-    return unless bow && bow.kind == "bow"
+  dmg = attack_power
 
-    angle =
-      case @direction
-      when :right then 0
-      when :down  then Math::PI / 2
-      when :left  then Math::PI
-      when :up    then -Math::PI / 2
-      end
+  element =
+    case weapon.id
+    when /water/
+      :water
+    when /fire|flame/
+      :fire
+    else
+      nil
+    end
 
-    dmg = bow.props[:atk] || bow.props["atk"] || 5
+  game.projectiles << Projectile.new(
+    @x, @y, angle,
+    damage: dmg,
+    owner: self,
+    element: element
+  )
+end
 
-    game.projectiles << Projectile.new(@x, @y, angle, damage: dmg, owner: self)
+def fire_projectile(game)
+  bow = equipped_weapon
+  return unless bow && bow.kind == "bow"
 
-    if bow.props[:durability]
-      bow.props[:durability] -= 1
-      if bow.props[:durability] <= 0
-        @inventory.unequip_weapon
-        game.ui.add_damage_screen(300, 200, "Bow broke!", Gosu::Color::RED)
-      end
+  angle =
+    case @direction
+    when :right then 0
+    when :down  then Math::PI / 2
+    when :left  then Math::PI
+    when :up    then -Math::PI / 2
+    end
+
+  dmg = bow.props[:atk] || bow.props["atk"] || 5
+
+  # ---------------------------------------------------------
+  # ELEMENT DETECTION
+  # ---------------------------------------------------------
+  element =
+    case bow.id
+    when /water/
+      :water
+    when /fire|flame/
+      :fire
+    else
+      nil
+    end
+
+  # ---------------------------------------------------------
+  # SPAWN PROJECTILE
+  # ---------------------------------------------------------
+  game.projectiles << Projectile.new(
+    @x, @y, angle,
+    damage: dmg,
+    owner: self,
+    element: element
+  )
+
+  # ---------------------------------------------------------
+  # DURABILITY HANDLING
+  # ---------------------------------------------------------
+  if bow.props[:durability]
+    bow.props[:durability] -= 1
+
+    if bow.props[:durability] <= 0
+      @inventory.unequip_weapon
+      game.ui.add_damage_screen(300, 200, "Bow broke!", Gosu::Color::RED)
     end
   end
+end
+
 
   def update_animation
     if Gosu.milliseconds - @last_frame_time > 100

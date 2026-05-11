@@ -27,7 +27,7 @@ class RogueEnemyPool
   props: {
     "hp" => hp,
     "atk" => atk,
-    "xp" => 5 + floor * 2   # or whatever scaling you want
+    "xp" => 15 + floor * 2   # or whatever scaling you want
   }
 }
 
@@ -47,7 +47,7 @@ class RogueEnemyPool
     "atk"  => atk,
     "boss" => true,
     "name" => boss_name,
-    "xp"   => 20 + floor * 5
+    "xp"   => 35 + floor * 5
   }
 }
 

@@ -141,8 +141,8 @@ def update_craft_button
   return unless @crafting_mode
   return unless @selected_for_craft.size >= 2
 
-  bx = 100
-  by = 380
+  bx = 500
+  by = 450
   bw = 140
   bh = 40
 
@@ -476,8 +476,8 @@ end
   # CRAFT BUTTON
   # -------------------------------------------------------------
   def draw_craft_button
-    bx = 100
-    by = 380
+    bx = 500
+    by = 450
     bw = 140
     bh = 40
 
