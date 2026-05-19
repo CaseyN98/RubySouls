@@ -41,7 +41,9 @@ class RogueMap
   def load_tile_images
     @tile_images = {
       "floor2"    => Gosu::Image.new("assets/tilesets/floor1.png", retro: true),
-      "wall_cave" => Gosu::Image.new("assets/tilesets/wall_cave.png", retro: true)
+      "wall_cave" => Gosu::Image.new("assets/tilesets/wall_cave.png", retro: true),
+      # Corridor uses floor art unless you add a dedicated PNG
+      "corridor"  => Gosu::Image.new("assets/tilesets/floor1.png", retro: true)
     }
   end
 
@@ -56,28 +58,41 @@ class RogueMap
   end
 
   # -------------------------------------------------------------
+  # Tile lookup by pixel
+  # -------------------------------------------------------------
+  def tile_at_pixel(px, py)
+    tx = (px / TILE_SIZE).floor
+    ty = (py / TILE_SIZE).floor
+    return nil unless tx.between?(0, @width - 1) && ty.between?(0, @height - 1)
+
+    @tiles.find { |t| t.x == tx * TILE_SIZE && t.y == ty * TILE_SIZE }
+  end
+
+  # -------------------------------------------------------------
   # Draw map
   # -------------------------------------------------------------
-def draw(cam_x, cam_y, screen_w, screen_h)
-  @tiles.each do |t|
-    img = @tile_images[t.kind]
-    next unless img
+  def draw(cam_x, cam_y, screen_w, screen_h)
+    @tiles.each do |t|
+      img = @tile_images[t.kind]
+      next unless img
 
-    sx = t.x - cam_x
-    sy = t.y - cam_y
+      sx = t.x - cam_x
+      sy = t.y - cam_y
 
-    next if sx < -TILE_SIZE || sx > screen_w
-    next if sy < -TILE_SIZE || sy > screen_h
+      next if sx < -TILE_SIZE || sx > screen_w
+      next if sy < -TILE_SIZE || sy > screen_h
 
-    img.draw(sx.floor, sy.floor, 0)
+      img.draw(sx.floor, sy.floor, 0)
+    end
   end
-end
 
+  # -------------------------------------------------------------
+  # Random floor tile (includes corridors unless filtered)
+  # -------------------------------------------------------------
   def random_floor_tile
-  loop do
-    tile = @tiles.sample
-    return { x: tile.x, y: tile.y } unless tile.solid
+    loop do
+      tile = @tiles.sample
+      return { x: tile.x, y: tile.y } unless tile.solid
+    end
   end
-end
-
 end

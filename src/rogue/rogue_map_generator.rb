@@ -1,134 +1,205 @@
 class RogueMapGenerator
   Tile = Struct.new(:x, :y, :kind, :solid)
 
-  attr_reader :width, :height, :tiles, :spawn_point
-
   TILE_SIZE = 16
+
+  attr_reader :width, :height, :tiles, :spawn_point
 
   def initialize(width, height)
     @width  = width
     @height = height
     @tiles  = []
-    @spawn_point = { x: width * TILE_SIZE / 2, y: height * TILE_SIZE / 2 }
+
+    @spawn_point = {
+      x: (width * TILE_SIZE) / 2,
+      y: (height * TILE_SIZE) / 2
+    }
 
     generate
   end
 
   # -------------------------------------------------------------
-  # MAIN GENERATION PIPELINE
+  # MAIN GENERATION
   # -------------------------------------------------------------
-  def generate
-    # 1. Initial random fill (balanced)
-    grid = Array.new(@height) { Array.new(@width, false) }
+def generate
+  grid = create_random_grid
+  rooms = create_rooms(grid)
 
-    @height.times do |y|
-      @width.times do |x|
+  corridor_mask = Array.new(@height) { Array.new(@width, false) }
+  connect_rooms(grid, rooms, corridor_mask)
+
+  1.times do
+    grid = smooth(grid, corridor_mask)
+  end
+
+  grid = ensure_connectivity(grid)
+
+  build_tiles(grid)
+end
+
+  # -------------------------------------------------------------
+  # INITIAL RANDOM FILL
+  # -------------------------------------------------------------
+  def create_random_grid
+    Array.new(@height) do |y|
+      Array.new(@width) do |x|
         if border?(x, y)
-          grid[y][x] = true
+          true
         else
-          grid[y][x] = rand < 0.45
+          # More walls = denser cave
+          rand < 0.52
         end
       end
     end
+  end
 
-    # 2. Carve rooms BEFORE smoothing
+  # -------------------------------------------------------------
+  # ROOM GENERATION
+  # -------------------------------------------------------------
+  def create_rooms(grid)
     rooms = []
 
-    # Spawn room
-    spawn_room = { x: @width/2 - 4, y: @height/2 - 4, w: 8, h: 8 }
-    carve_room(grid, spawn_room[:x], spawn_room[:y], spawn_room[:w], spawn_room[:h])
+    # Central spawn room
+    spawn_room = {
+      x: (@width / 2) - 4,
+      y: (@height / 2) - 4,
+      w: 8,
+      h: 8
+    }
+
+    carve_room(grid, spawn_room)
     rooms << spawn_room
 
-    # Add more rooms (this is the ONLY change)
-    rand(6..10).times do
-      rx = rand(3..@width - 12)
-      ry = rand(3..@height - 12)
-      rw = rand(5..10)
-      rh = rand(5..10)
-      carve_room(grid, rx, ry, rw, rh)
-      rooms << { x: rx, y: ry, w: rw, h: rh }
+    # Smaller/tighter rooms with overlap prevention
+    target_rooms = rand(7..12)
+    attempts     = target_rooms * 5
+
+    attempts.times do
+      break if rooms.size >= target_rooms + 1 # +1 for spawn room
+
+      room = {
+        x: rand(2..@width - 12),
+        y: rand(2..@height - 12),
+        w: rand(4..8),
+        h: rand(4..8)
+      }
+
+      next if room_overlaps?(rooms, room)
+
+      carve_room(grid, room)
+      rooms << room
     end
 
-    # 3. Connect rooms
-    connect_rooms(grid, rooms)
+    rooms
+  end
 
-    # 4. Light smoothing (keeps structure)
-    2.times do
-      grid = smooth(grid)
-    end
+  def carve_room(grid, room)
+    x1 = room[:x]
+    y1 = room[:y]
+    x2 = x1 + room[:w]
+    y2 = y1 + room[:h]
 
-    # 5. Convert to tiles
-    @height.times do |y|
-      @width.times do |x|
-        if grid[y][x]
-          add_tile(x, y, "wall_cave", true)
-        else
-          add_tile(x, y, "floor2", false)
-        end
+    (y1...y2).each do |y|
+      (x1...x2).each do |x|
+        next if border?(x, y)
+
+        grid[y][x] = false
       end
     end
   end
 
-  # -------------------------------------------------------------
-  # ROOM CARVING
-  # -------------------------------------------------------------
-  def carve_room(grid, x, y, w, h)
-    (y...(y + h)).each do |yy|
-      (x...(x + w)).each do |xx|
-        next if xx <= 0 || yy <= 0 || xx >= @width - 1 || yy >= @height - 1
-        grid[yy][xx] = false
-      end
+  def room_overlaps?(rooms, new_room)
+    # Small padding so rooms don't touch directly
+    padding = 1
+
+    nx1 = new_room[:x] - padding
+    ny1 = new_room[:y] - padding
+    nx2 = new_room[:x] + new_room[:w] + padding
+    ny2 = new_room[:y] + new_room[:h] + padding
+
+    rooms.any? do |r|
+      rx1 = r[:x]
+      ry1 = r[:y]
+      rx2 = r[:x] + r[:w]
+      ry2 = r[:y] + r[:h]
+
+      nx1 < rx2 && nx2 > rx1 && ny1 < ry2 && ny2 > ry1
     end
   end
 
   # -------------------------------------------------------------
-  # CONNECT ROOMS WITH CORRIDORS
+  # ROOM CONNECTIONS
   # -------------------------------------------------------------
-  def connect_rooms(grid, rooms)
-    rooms.each_cons(2) do |a, b|
-      carve_corridor(grid, a, b)
+  def connect_rooms(grid, rooms, corridor_mask)
+    rooms.each_cons(2) do |room_a, room_b|
+      carve_corridor(grid, corridor_mask, room_a, room_b)
     end
   end
 
-  def carve_corridor(grid, room_a, room_b)
+  def carve_corridor(grid, corridor_mask, room_a, room_b)
     ax = room_a[:x] + room_a[:w] / 2
     ay = room_a[:y] + room_a[:h] / 2
+
     bx = room_b[:x] + room_b[:w] / 2
     by = room_b[:y] + room_b[:h] / 2
 
-    carve_line(grid, ax, ay, bx, ay)
-    carve_line(grid, bx, ay, bx, by)
+    # Slightly wider corridors (2 tiles)
+    if rand < 0.5
+      carve_horizontal(grid, corridor_mask, ax, bx, ay)
+      carve_vertical(grid, corridor_mask, ay, by, bx)
+    else
+      carve_vertical(grid, corridor_mask, ay, by, ax)
+      carve_horizontal(grid, corridor_mask, ax, bx, by)
+    end
   end
 
-  def carve_line(grid, x1, y1, x2, y2)
-    if x1 == x2
-      Range.new(*[y1, y2].sort).each { |y| grid[y][x1] = false }
-    elsif y1 == y2
-      Range.new(*[x1, x2].sort).each { |x| grid[y1][x] = false }
+  def carve_horizontal(grid, corridor_mask, x1, x2, y)
+    Range.new(*[x1, x2].sort).each do |x|
+      [-1, 0].each do |dy|
+        ny = y + dy
+        next if out_of_bounds?(x, ny) || border?(x, ny)
+
+        grid[ny][x]          = false
+        corridor_mask[ny][x] = true
+      end
+    end
+  end
+
+  def carve_vertical(grid, corridor_mask, y1, y2, x)
+    Range.new(*[y1, y2].sort).each do |y|
+      [-1, 0].each do |dx|
+        nx = x + dx
+        next if out_of_bounds?(nx, y) || border?(nx, y)
+
+        grid[y][nx]          = false
+        corridor_mask[y][nx] = true
+      end
     end
   end
 
   # -------------------------------------------------------------
-  # CELLULAR AUTOMATA SMOOTHING
+  # CELLULAR AUTOMATA
   # -------------------------------------------------------------
-  def smooth(grid)
-    new_grid = Array.new(@height) { Array.new(@width, false) }
-
-    @height.times do |y|
-      @width.times do |x|
-        wall_count = count_walls(grid, x, y)
-
-        if wall_count >= 5
-          new_grid[y][x] = true
-        elsif wall_count <= 3
-          new_grid[y][x] = false
+  def smooth(grid, corridor_mask)
+    Array.new(@height) do |y|
+      Array.new(@width) do |x|
+        # Preserve carved corridors exactly
+        if corridor_mask[y][x]
+          false
         else
-          new_grid[y][x] = grid[y][x]
+          walls = count_walls(grid, x, y)
+
+          # Stronger wall preservation
+          if walls >= 5
+            true
+          elsif walls <= 2
+            false
+          else
+            grid[y][x]
+          end
         end
       end
     end
-
-    new_grid
   end
 
   def count_walls(grid, x, y)
@@ -136,12 +207,12 @@ class RogueMapGenerator
 
     (-1..1).each do |dy|
       (-1..1).each do |dx|
+        next if dx == 0 && dy == 0
+
         nx = x + dx
         ny = y + dy
 
-        next if dx == 0 && dy == 0
-
-        if nx < 0 || ny < 0 || nx >= @width || ny >= @height
+        if out_of_bounds?(nx, ny)
           count += 1
         elsif grid[ny][nx]
           count += 1
@@ -153,23 +224,93 @@ class RogueMapGenerator
   end
 
   # -------------------------------------------------------------
-  # HELPERS
+  # TILE BUILDING
   # -------------------------------------------------------------
-  def border?(x, y)
-    x == 0 || y == 0 || x == @width - 1 || y == @height - 1
+  def build_tiles(grid)
+    @tiles.clear
+
+    @height.times do |y|
+      @width.times do |x|
+        if grid[y][x]
+          add_tile(x, y, "wall_cave", true)
+        else
+          add_tile(x, y, "floor2", false)
+        end
+      end
+    end
   end
 
   def add_tile(tx, ty, kind, solid)
-    @tiles << Tile.new(tx * TILE_SIZE, ty * TILE_SIZE, kind, solid)
+    @tiles << Tile.new(
+      tx * TILE_SIZE,
+      ty * TILE_SIZE,
+      kind,
+      solid
+    )
   end
 
   # -------------------------------------------------------------
-  # REQUIRED BY RogueFloor — ensures valid spawn positions
+  # HELPERS
+  # -------------------------------------------------------------
+  def border?(x, y)
+    x <= 0 ||
+      y <= 0 ||
+      x >= @width - 1 ||
+      y >= @height - 1
+  end
+
+  def out_of_bounds?(x, y)
+    x < 0 || y < 0 || x >= @width || y >= @height
+  end
+def ensure_connectivity(grid)
+  visited = Array.new(@height) { Array.new(@width, false) }
+
+  # Convert spawn pixel → tile coords
+  sx = @spawn_point[:x] / TILE_SIZE
+  sy = @spawn_point[:y] / TILE_SIZE
+
+  queue = [[sx, sy]]
+  visited[sy][sx] = true
+
+  # BFS flood fill
+  until queue.empty?
+    x, y = queue.shift
+
+    [[1,0],[-1,0],[0,1],[0,-1]].each do |dx, dy|
+      nx = x + dx
+      ny = y + dy
+      next if out_of_bounds?(nx, ny)
+      next if visited[ny][nx]
+      next if grid[ny][nx] == true  # wall
+
+      visited[ny][nx] = true
+      queue << [nx, ny]
+    end
+  end
+
+  # Any floor tile not visited becomes a wall
+  @height.times do |y|
+    @width.times do |x|
+      if grid[y][x] == false && !visited[y][x]
+        grid[y][x] = true
+      end
+    end
+  end
+
+  grid
+end
+
+  # -------------------------------------------------------------
+  # RANDOM FLOOR TILE
   # -------------------------------------------------------------
   def random_floor_tile
-    loop do
-      tile = @tiles.sample
-      return { x: tile.x, y: tile.y } unless tile.solid
-    end
+    floor_tiles = @tiles.reject(&:solid)
+    tile = floor_tiles.sample
+    return nil unless tile
+
+    {
+      x: tile.x,
+      y: tile.y
+    }
   end
 end

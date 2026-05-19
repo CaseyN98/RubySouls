@@ -19,11 +19,15 @@ class RogueFloor
 
   # -------------------------------------------------------------
   # Helper: pick a floor tile NOT inside the spawn room
+  # and NOT inside a corridor (thin paths)
   # -------------------------------------------------------------
   def safe_random_tile
     loop do
       pos = @map.random_floor_tile
-      return pos unless near_spawn?(pos)
+      next if near_spawn?(pos)
+      next if corridor_tile?(pos)
+
+      return pos
     end
   end
 
@@ -31,6 +35,12 @@ class RogueFloor
     sx = @map.spawn_point[:x]
     sy = @map.spawn_point[:y]
     (pos[:x] - sx).abs < 64 && (pos[:y] - sy).abs < 64
+  end
+
+  # Corridor tiles are narrow and should not hold chests or exit
+  def corridor_tile?(pos)
+    tile = @map.tile_at_pixel(pos[:x], pos[:y])
+    tile && tile.kind == "corridor"
   end
 
   # -------------------------------------------------------------
@@ -60,9 +70,10 @@ class RogueFloor
   def generate_boss
     base = RogueEnemyPool.random_boss_for_floor(@floor_number)
 
-    # Try 50 random tiles, pick the furthest from spawn
     spawn = @map.spawn_point
-    candidates = 50.times.map { @map.random_floor_tile }
+
+    # Try 50 random tiles, pick the furthest from spawn
+    candidates = 50.times.map { safe_random_tile }
 
     far = candidates.max_by do |pos|
       dx = pos[:x] - spawn[:x]
@@ -106,7 +117,7 @@ class RogueFloor
   end
 
   # -------------------------------------------------------------
-  # Exit tile — also avoid spawn room
+  # Exit tile — also avoid spawn room and corridors
   # -------------------------------------------------------------
   def generate_exit
     pos = safe_random_tile
